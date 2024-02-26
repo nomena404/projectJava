@@ -59,7 +59,7 @@ public class Accueil extends JFrame {
         //panel.setLayout(new GridLayout(1,3));
         panel.setBackground(Color.gray);
        // panel.add(new JLabel(new ImageIcon("vikingsFond.jpg")));
-
+//
         this.add(panel);
     }
 
