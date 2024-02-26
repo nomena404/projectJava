@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Affichage.Jeu">
+  <grid id="27dc6" binding="non" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+    <constraints>
+      <xy x="21" y="20" width="513" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <hspacer id="bb282">
+        <constraints/>
+      </hspacer>
+      <component id="9af07" class="javax.swing.JButton" binding="jesp">
+        <constraints/>
+        <properties>
+          <text value="Button"/>
+        </properties>
+      </component>
+      <toolbar id="ece7c">
+        <constraints/>
+        <properties/>
+        <border type="none"/>
+        <children/>
+      </toolbar>
+      <component id="df552" class="javax.swing.JButton" binding="Connexion">
+        <constraints/>
+        <properties>
+          <text value="Button"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>
