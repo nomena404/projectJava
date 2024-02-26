@@ -10,7 +10,7 @@ import java.awt.*;
 public class Accueil extends JFrame {
 
     JPanel panel; // mon conteneur
-    JButton commencer;
+    JButton commencer; //
     JButton connexion ;
     JButton creerCompte;
     JTextArea texte;
