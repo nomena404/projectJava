@@ -63,6 +63,8 @@ public class Accueil extends JFrame {
         this.add(panel);
     }
 
+    //
+
     public void reglageFenetre() throws UnsupportedLookAndFeelException {
         this.setVisible(true);
         //permet de rendre l'affichage des boutons plus moderne
