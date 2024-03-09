@@ -1,0 +1,51 @@
+package Affichage;
+
+import javax.swing.*;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.multi.MultiLookAndFeel;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import javax.swing.plaf.synth.SynthLookAndFeel;
+import java.awt.*;
+
+public class Accueil extends JFrame {
+    JTextArea descriptif ;
+
+   JTextField utilisateur;
+   JLabel image;
+
+    public Accueil(){
+       configFenetre();
+       ajoutFenetre();
+        setVisible(true);
+
+    }
+
+    public void ajoutFenetre(){
+        descriptif=new JTextArea("Un grand bonjour à vous cher aventurier " +
+                "appuyer ok pour commencer");
+        descriptif.setPreferredSize(new Dimension(200,95));
+        descriptif.setEditable(false);
+
+        utilisateur= new JTextField("Un grand bonjour à vous cher aventurier , appuyer ok pour commencer");
+        utilisateur.setPreferredSize(new Dimension(200,95));
+        image=new JLabel(new ImageIcon("vikingsFond.jpg"));
+        JScrollPane pane= new JScrollPane(descriptif);
+
+        add(pane,BorderLayout.SOUTH);
+        add(utilisateur, BorderLayout.CENTER);
+        add(image,BorderLayout.NORTH);
+
+    }
+    public void configFenetre(){
+        setTitle("Mon jeu vikings");
+        setSize(800,650);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+    }
+
+    public static void main(String []argc) throws UnsupportedLookAndFeelException {
+        Accueil a= new Accueil();
+        //
+    }
+}

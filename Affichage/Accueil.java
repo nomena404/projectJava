@@ -1,83 +1,88 @@
 package Affichage;
 
 import javax.swing.*;
-import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.swing.plaf.multi.MultiLookAndFeel;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import javax.swing.plaf.synth.SynthLookAndFeel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.URL;
 
-public class Accueil extends JFrame {
+public class Accueil implements ActionListener {
 
-    JPanel panel; // mon conteneur
-    JButton commencer; //
-    JButton connexion ;
-    JButton creerCompte;
-    JTextArea texte;
-    public Accueil() throws UnsupportedLookAndFeelException {
+    JFrame maFenetre;
+    JTextArea descriptif;
+    JTextField utilisateur;
+    JLabel image ;
+    boolean jeuDemarre;
 
-        super("Mon prémier lancement");
-        reglageFenetre();
-        configurationConteneur();
-        reglageBouton();
-        reglageText();
-        fenetre();
-
-
+    public Accueil() {
+        configFenetre();
 
     }
 
-   /* public JToolBar bar(){
-         JToolBar too=new JToolBar();
-         too.add(connexion);
-         too.add(commencer);
-         too.add(creerCompte);
-         return too;
-    }
+    public void configFenetre(){
+        maFenetre = new JFrame("Royaume de Kattekat");
+        image = new JLabel();
+        descriptif = new JTextArea();
+        utilisateur = new JTextField();
 
-    */
+        URL imageURL = this.getClass().getClassLoader().getResource("vikingsFond.jpg");
+        image.setIcon(new ImageIcon(imageURL));
 
-    public void fenetre(){
-        panel.add(texte,BorderLayout.WEST);
-        panel.add(commencer,BorderLayout.SOUTH);
+        JScrollPane listScroller = new JScrollPane(descriptif);
+        listScroller.setPreferredSize(new Dimension(100, 100));
+        listScroller.setMinimumSize(new Dimension(100, 100));
 
-    }
-    public void reglageText(){
-        texte=new JTextArea("Commencer ici");
-    }
-
-    public void reglageBouton(){
-        commencer=new JButton("Commencer");
-        connexion = new JButton("Connexion");
-        creerCompte= new JButton("Créer un compte");
-    }
-    public void configurationConteneur(){
-        panel=new JPanel();
+        JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-       // panel.setLayout(null);
-      //  panel.setLayout(new FlowLayout());
-        //panel.setLayout(new GridLayout(1,3));
-        panel.setBackground(Color.gray);
-       // panel.add(new JLabel(new ImageIcon("vikingsFond.jpg")));
-//
-        this.add(panel);
+        panel.add(image, BorderLayout.NORTH);
+        panel.add(listScroller, BorderLayout.CENTER);
+        panel.add(utilisateur, BorderLayout.SOUTH);
+
+        maFenetre.getContentPane().add(panel, BorderLayout.CENTER);
+        maFenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        descriptif.setEditable(false);
+
+        utilisateur.addActionListener(this);
+        descriptif.setText("BIENVENU SUR NOTRE JEU KATTEGAT \nChoisissez le nom de votre personnage");
+
+
+        maFenetre.setVisible(true);
+maFenetre.pack();
+        utilisateur.requestFocus();
+    }
+    @Override
+
+    public void actionPerformed(ActionEvent e) {
+        String input = utilisateur.getText().toLowerCase();
+
+
+        if (!jeuDemarre) {
+            // Si le jeu n'a pas encore démarré
+            if (input.equals("démarrer")) {
+                descriptif.setText("Bienvenue, " +  "! Les règles du jeu: ...");
+                URL imageURL = this.getClass().getClassLoader().getResource("game/images/GrandeSalle.jpg");
+                image.setIcon(new ImageIcon(imageURL));
+                jeuDemarre = true;
+            } else {
+                // Si le joueur n'a pas encore choisi de nom, enregistrez le texte comme nom du personnage
+                if (input == null) {
+                    input = "";
+                    descriptif.setText("Nom du personnage enregistré : " );
+                    utilisateur.setText("");  // Effacez le champ de texte
+                } else {
+                    descriptif.setText("Rentrez 'Démarrer' pour commencer le jeu.");
+                }
+            }
+        } else {
+            descriptif.setText("Commande non reconnue. Essayez autre chose.");
+        }
+    }
+    public static void main(String []argc){
+        SwingUtilities.invokeLater(() -> new Accueil());
+
     }
 
-    //
 
-    public void reglageFenetre() throws UnsupportedLookAndFeelException {
-        this.setVisible(true);
-        //permet de rendre l'affichage des boutons plus moderne
-        UIManager.setLookAndFeel(new MetalLookAndFeel());
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setSize(700,600);
-        //permet de centrer l'application par rapport au bureau ,
-        // on le mettant en null signifie qu'elle se triuve au milieu lorqu'on lance l'application
-        this.setLocationRelativeTo(null);
-    }
 
-    public static void main(String []argc) throws UnsupportedLookAndFeelException {
-        Accueil a= new Accueil();
-        //
-    }
+
 }
