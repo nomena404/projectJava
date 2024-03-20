@@ -1,63 +1,93 @@
 package Vue;
 
 import Controlleur.Controlleur;
-import Controlleur.Controlleur; // Assurez-vous que cette importation correspond au nom de votre package et de votre classe
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
 
 public class Gui implements ActionListener {
     private JFrame fenetre;
     private JTextField entree;
     private JTextArea texte;
-    private JLabel image;
-    private Controlleur controlleur; // Notez la correction de la casse et de l'orthographe ici
-    private boolean jeuDemarre;
+    private JLabel imageLabel; // Label pour afficher l'image
+    private Controlleur controlleur;
+    private JButton demarrerBtn;
+    private JButton continuerBtn;
+    private String etat = "demandePseudo"; // Gère les états de l'interface
 
     public Gui(Controlleur controlleur) {
-        this.controlleur = controlleur; // Initialisez votre controlleur
-        jeuDemarre = false;
-        page();
+        this.controlleur = controlleur;
+        initialiserGUI();
     }
 
-    public void page() {
+    private void initialiserGUI() {
         fenetre = new JFrame("Royaume de Kattekat");
-        image = new JLabel(new ImageIcon(getClass().getResource("/labyrinthe.png"))); // Correction pour s'assurer que le chemin est correct
-        texte = new JTextArea();
+        fenetre.setLayout(new BorderLayout());
+
+        imageLabel = new JLabel(); // Prépare le JLabel pour l'image
+        chargerImage("/vikingsFond.jpg"); // Chargez l'image initiale ici
+
+        texte = new JTextArea("Bienvenue sur notre jeu. Veuillez entrer votre pseudo.");
         entree = new JTextField();
+        demarrerBtn = new JButton("Démarrer");
+        continuerBtn = new JButton("Continuer");
 
-        JScrollPane listScroller = new JScrollPane(texte);
-        listScroller.setPreferredSize(new Dimension(100, 100));
-        listScroller.setMinimumSize(new Dimension(100, 100));
+        JPanel centrePanel = new JPanel(new BorderLayout());
+        centrePanel.add(imageLabel, BorderLayout.CENTER); // Place l'image au centre
+        centrePanel.add(texte, BorderLayout.SOUTH);
 
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(image, BorderLayout.NORTH);
-        panel.add(listScroller, BorderLayout.CENTER);
-        panel.add(entree, BorderLayout.SOUTH);
+        fenetre.add(centrePanel, BorderLayout.CENTER);
+        fenetre.add(entree, BorderLayout.SOUTH);
+        fenetre.add(demarrerBtn, BorderLayout.EAST);
+        fenetre.add(continuerBtn, BorderLayout.WEST);
 
-        fenetre.setContentPane(panel);
-        fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        demarrerBtn.setVisible(false);
+        continuerBtn.setVisible(false);
         texte.setEditable(false);
 
         entree.addActionListener(this);
-        texte.setText("BIENVENUE SUR NOTRE JEU KATTEGAT\nLe jeu consiste à récupérer les runes pour affronter le terrible Ragnork.\nPour commencer, appuyez sur OK.");
+        demarrerBtn.addActionListener(e -> controlleur.actionDemarrer());
+        continuerBtn.addActionListener(e -> controlleur.actionContinuer());
 
-        fenetre.setPreferredSize(new Dimension(800, 600));
-        fenetre.pack();
+        fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        fenetre.setSize(new Dimension(800, 600));
         fenetre.setVisible(true);
-
-        entree.requestFocus();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String input = entree.getText().toLowerCase();
-        controlleur.traiterEntreeUtilisateur(input);
+        if ("demandePseudo".equals(etat)) {
+            controlleur.verifierPseudo(entree.getText().trim());
+        }
+    }
+
+    public void setEtat(String nouvelEtat, String message) {
+        SwingUtilities.invokeLater(() -> {
+            etat = nouvelEtat;
+            texte.setText(message);
+            switch (etat) {
+                case "demarrerJeu":
+                    chargerImage("/labyrinthe.png");
+                    demarrerBtn.setVisible(true);
+                    entree.setVisible(false);
+                    break;
+                case "continuerJeu":
+                    continuerBtn.setVisible(true);
+                    break;
+
+            }
+        });
     }
 
     public void afficherMessage(String message) {
         SwingUtilities.invokeLater(() -> texte.setText(message));
+    }
+
+
+    private void chargerImage(String cheminImage) {
+        ImageIcon imageIcon = new ImageIcon(getClass().getResource(cheminImage));
+        imageLabel.setIcon(imageIcon);
+        fenetre.pack();
     }
 }

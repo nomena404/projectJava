@@ -9,12 +9,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class BasePers {
-    protected static final String JSON_FILE_PATH = "Pseudo.json";
+    protected static  String JSON_FILE_PATH = "Add.json";
 
-    // Méthode pour écrire un objet NvlPseudo dans le fichier JSON
+
     protected static void ecritureJson(NvlPseudo p) {
         JSONArray jsonArray = lectureJson();
-
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("pseudo", p.getPseudo());
         jsonObject.put("num", p.getNumero());
@@ -28,7 +27,7 @@ public class BasePers {
         }
     }
 
-    // Méthode pour lire les pseudos à partir du fichier JSON
+
     protected static JSONArray lectureJson() {
         JSONArray jsonArray = new JSONArray();
         try (FileReader reader = new FileReader(JSON_FILE_PATH)) {
