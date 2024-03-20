@@ -1,5 +1,8 @@
 package Affichage;
 
+import Exceptions.LePseudoExisteDéjà;
+import Utilisateur.NvlPseudo;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,7 +15,6 @@ public class Gui implements ActionListener {
     private JTextArea texte;
     private JLabel image;
 
-    private String nomPersonnage;
     private boolean jeuDemarre = false;
 
     public Gui() {
@@ -25,8 +27,12 @@ public class Gui implements ActionListener {
         texte = new JTextArea();
         entree = new JTextField();
 
-        URL imageURL = this.getClass().getClassLoader().getResource("vikingsFond.jpg");
-        image.setIcon(new ImageIcon(imageURL));
+        URL imageURL = getClass().getClassLoader().getResource("labyrinthe.png");
+        if (imageURL != null) {
+            image.setIcon(new ImageIcon(imageURL));
+        } else {
+            System.err.println("Image introuvable : labyrinthe.png");
+        }
 
         JScrollPane listScroller = new JScrollPane(texte);
         listScroller.setPreferredSize(new Dimension(100, 100));
@@ -43,8 +49,9 @@ public class Gui implements ActionListener {
         texte.setEditable(false);
 
         entree.addActionListener(this);
-        texte.setText("BIENVENU SUR NOTRE JEU KATTEGAT \nChoisissez le nom de votre personnage");
+        texte.setText("BIENVENUE SUR NOTRE JEU KATTEGAT\nLe jeu consiste à récupérer les runes pour affronter le terrible Ragnork.\nPour commencer, appuyez sur OK.");
 
+        fenetre.setPreferredSize(new Dimension(800, 600));
         fenetre.pack();
         fenetre.setVisible(true);
 
@@ -56,20 +63,24 @@ public class Gui implements ActionListener {
         String input = entree.getText().toLowerCase();
 
         if (!jeuDemarre) {
-            // Si le jeu n'a pas encore démarré
-            if (input.equals("démarrer")) {
-                texte.setText("Bienvenue, " + nomPersonnage + "! Les règles du jeu: ...");
-                URL imageURL = this.getClass().getClassLoader().getResource("game/images/GrandeSalle.jpg");
-                image.setIcon(new ImageIcon(imageURL));
-                jeuDemarre = true;
+            if (input.equals("ok")) {
+                texte.setText("Les règles du jeu cher joueur : entrez votre pseudo pour une belle aventure ou reprenez là où vous vous êtes arrêté en entrant votre pseudo.");
+                entree.setText("");
             } else {
-                // Si le joueur n'a pas encore choisi de nom, enregistrez le texte comme nom du personnage
-                if (nomPersonnage == null) {
-                    nomPersonnage = input;
-                    texte.setText("Nom du personnage enregistré : " + nomPersonnage);
-                    entree.setText("");  // Effacez le champ de texte
-                } else {
-                    texte.setText("Rentrez 'Démarrer' pour commencer le jeu.");
+                try {
+                    if (NvlPseudo.pseudoExistant(input)) {
+                        texte.setText("Bienvenue : " + input + "\nAppuyez sur OK pour démarrer.");
+                        entree.setText("");
+                        jeuDemarre = true;
+                    } else {
+                        NvlPseudo perso = new NvlPseudo(input);
+                        perso.ajout();
+
+                        texte.setText("Bienvenue : " + input + "\nAppuyez sur OK pour démarrer.");
+                        entree.setText("");
+                    }
+                } catch (LePseudoExisteDéjà ex) {
+                    System.err.println("Erreur : " + ex.getMessage());
                 }
             }
         } else {
@@ -78,6 +89,6 @@ public class Gui implements ActionListener {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Gui());
+        SwingUtilities.invokeLater(Gui::new);
     }
 }
