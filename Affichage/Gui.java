@@ -14,7 +14,7 @@ public class Gui implements ActionListener {
 
     private String nomPersonnage;
     private boolean jeuDemarre = false;
-
+    Jeu jeu = new Jeu();
     public Gui() {
         page();
     }
@@ -75,7 +75,20 @@ public class Gui implements ActionListener {
         } else {
             texte.setText("Commande non reconnue. Essayez autre chose.");
         }
+        for(Commande commande : Commande.values()) {
+        	if(entree.equals(commande)) {
+        		//jeu.executerCommande(entree);
+        	}
+        }
+        for(Sortie sortie : Sortie.values()) {
+        	if(entree.equals(entree)) {
+        	//	jeu.traiterSortie(entree);
+        	}
+        }
+        entree.setText("");
+        
     }
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Gui());
