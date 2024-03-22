@@ -1,5 +1,6 @@
 package Zone;
 
+import Modele.EtatJeu;
 import Vue.Gui;
 
 import java.util.*;
@@ -76,6 +77,7 @@ public class ZoneForetDesAnciens implements IZone {
     }
 
     private void quitterEtSauvegarder() {
+        EtatJeu etatJeu= new EtatJeu(gui.getPseudo(),gui.list(),gui.getEtatAvant(), gui.getEtatActuel());
         gui.chargerImage("bye.png");
         gui.setEtat("foretDesAnciens"," Aurevoir");
     }
@@ -87,36 +89,35 @@ public class ZoneForetDesAnciens implements IZone {
     }
 
     private void afficherErmite() {
-        gui.chargerImage("Images/foret/Ermite.png");
+        gui.chargerImage("Images/foret/ZoneEstErmite.png");
         gui.setEtat("foretDesAnciens",""+"Je grandis sans fin, plus vieux que les montagnes,\n nourrissant la vie sans jamais la prendre. Qui suis-je ? ");
 
     }
 
     private void allerAuEst() {
-        gui.chargerImage("Images/foret/JoueurEST.png");
-        gui.setEtatAvant("zoneEst");
+        gui.chargerImage("Images/foret/ZoneEst.png");
+        gui.setEtatAvant("ZoneEst");
         gui.setEtat("foretDesAnciens","Vous etes a l'est\n Utilisez deux  elements que tu possèdent  pour invoquer l'ermite\n Par exemple cle_serrure, maintenat à toi !!!");
 
     }
 
     private void afficherInventaire() {
 
-        gui.setEtat("foretDesAnciens","Voici les elements que vous possédez :\n"+ inventaire.toString());
+        gui.setEtat("foretDesAnciens","Voici les elements que vous possédez :\n"+ gui.inventaire());
     }
     private void ajoutInventaire(String e){
 
-        inventaire.add(e);
+
+        gui.addElement(e);
         gui.setEtat("foretDesAnciens","Vous avez pris:"+e);
 
     }
 
     private void prendreObjet() {
         if(gui.getEtatAvant()=="ZoneSud"){
-            gui.setEtatAvant("PrendreElement");
             gui.setEtat("foretDesAnciens","Vous etes au Sud\n Prenez des elements");
   }
         if(gui.getEtatAvant()=="ZoneNord"){
-            gui.setEtatAvant("PrendreElement");
             gui.setEtat("foretDesAnciens","Vous etes au Nord\n Prenez des elements");
         }
 
@@ -125,15 +126,15 @@ public class ZoneForetDesAnciens implements IZone {
 
     private void allerAuSud() {
 
-        gui.chargerImage("Images/foret/AncienSud.png");
+        gui.chargerImage("Images/foret/ZoneSud.png");
         gui.setEtatAvant("zoneSud");
         gui.setEtat("foretDesAnciens","Vous etes au Sud\n Prenez des elements");
     }
 
     private void allerAuNord() {
 
-        gui.chargerImage("Images/foret/AncienNordR.png");
-        gui.setEtatAvant("zoneNord");
+        gui.chargerImage("Images/foret/ZoneNord.png");
+        gui.setEtatAvant("ZoneNord");
         gui.setEtat("foretDesAnciens","Vous etes au Nord");
 
     }

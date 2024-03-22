@@ -1,5 +1,6 @@
 package Controlleur;
 
+import Modele.EtatJeu;
 import Modele.Exceptions.LePseudoExisteDéjà;
 import Modele.NvlPseudo;
 import Vue.Gui;
@@ -39,7 +40,7 @@ public class Controlleur {
         System.out.println("Vérification du pseudo: " + pseudo); // Pour le débogage
         if(NvlPseudo.pseudoExistant(pseudo)){
             vue.setPseudo(pseudo);
-            System.out.println("Le pseudo existe."); // Pour le débogage
+            System.out.println("Le pseudo existe.");
             vue.setEtat("UtilisateurConnu", "Bienvenue " + pseudo);
         } else {
             System.out.println("Le pseudo n'existe pas."); // Pour le débogage
@@ -56,27 +57,26 @@ public class Controlleur {
         }
         // Ajoutez d'autres conditions pour d'autres zones/états
     }
-    public void connexion(String pseudo) {
-        // Ici, implémentez la vérification de l'existence du pseudo
-        // Si le pseudo existe, chargez l'état du jeu pour cet utilisateur
-        // Sinon, affichez un message d'erreur
-        // Pour simplifier, on suppose que tout pseudo entré est valide
-        vue.afficherMessage("Connexion réussie. Bienvenue " + pseudo + " !");
-        // Simulez la charge de la dernière zone de l'utilisateur
-        // Par exemple, charger la Forêt des Anciens si c'est là qu'ils se sont arrêtés
-        vue.setEtat("foretDesAnciens", "Vous êtes dans la Forêt des Anciens. Choisissez une direction (NORD, SUD, EST).");
-    }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         new Controlleur();
     }
+
+     */
 
     public void firstZone(){
         foretDesAnciens.entrer();
     }
 
     public void lastZone() {
-        // à implémenter
-        vue.chargerImage("suite.png");
+        EtatJeu etat=  EtatJeu.recupererEtatJeu(vue.getPseudo());
+        switch (etat.getZone()){
+            case"foretDesAnciens":
+                vue.setEtat("foretDesAnciens","Bienvenue +"+ vue.getPseudo());
+                vue.chargerImage("Images/foret/"+etat.getEtat()+".png");
+                break;
+        }
+
+
     }
 }

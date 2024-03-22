@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Gui implements ActionListener {
     private JFrame fenetre;
@@ -16,6 +18,7 @@ public class Gui implements ActionListener {
     private String etatActuel = "accueil";
     private String etatAvant="";
     private String pseudo="";
+    private Set<String> inventaire=new HashSet<String>();
 
     public Gui(Controlleur controlleur) {
         this.controlleur = controlleur;
@@ -133,9 +136,7 @@ public class Gui implements ActionListener {
                 case "foretDesAnciens":
                     entree.setVisible(true);
                     break;
-                case"AncienNord":
 
-                    break;
                 // Autres cas pour différents états de jeu
             }
         });
@@ -167,5 +168,18 @@ public class Gui implements ActionListener {
     }
     public void  setPseudo(String p){
         pseudo=p;
+    }
+    public void addElement(String e){
+        inventaire.add(e);
+    }
+    public String inventaire(){
+        if(inventaire.size()==0){
+            return "Vous avez zero elements";
+        }
+        return inventaire.toString();
+
+    }
+    public Set<String> list(){
+        return inventaire;
     }
 }
