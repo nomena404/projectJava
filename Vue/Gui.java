@@ -29,7 +29,7 @@ public class Gui implements ActionListener {
         fenetre = new JFrame("Royaume de Kattekat");
         fenetre.setLayout(new BorderLayout());
 
-        imageLabel = new JLabel(new ImageIcon("Accueil.png")); // Assurez-vous d'avoir l'image appropriée
+        imageLabel = new JLabel(new ImageIcon("Images/Accueil/Accueil.png")); // Assurez-vous d'avoir l'image appropriée
         texte = new JTextArea("Bienvenue sur notre jeu. Veuillez choisir une option.");
         texte.setEditable(false);
 
@@ -63,7 +63,7 @@ public class Gui implements ActionListener {
 
     private void demanderPseudo() {
         etatActuel = "demanderPseudo";
-        chargerImage("Objectif.png");
+        chargerImage("Images/Accueil/Objectif.png");
         texte.setText("Veuillez entrer votre pseudo :");
         entree.setVisible(true);
         demarrerBtn.setVisible(false);
@@ -72,7 +72,7 @@ public class Gui implements ActionListener {
     }
     private void demanderNvlPseudo() {
         etatActuel = "demanderNvlPseudo";
-        chargerImage("Objectif.png");
+        chargerImage("Images/Accueil/Objectif.png");
         texte.setText("Veuillez entrer votre pseudo :");
         entree.setVisible(true);
         demarrerBtn.setVisible(false);
@@ -102,6 +102,9 @@ public class Gui implements ActionListener {
         if("demanderNvlPseudo".equals(etatActuel)){
             controlleur.nouvellePseudo(entree.getText().trim());
         }
+        if(etatActuel.equals("foretDesAnciens")){
+            controlleur.traiterEntreeForet(entree.getText().trim());
+        }
 
 
     }
@@ -126,6 +129,12 @@ public class Gui implements ActionListener {
                     controlleur.firstZone();
                     break;
 
+                case "foretDesAnciens":
+                    entree.setVisible(true);
+                    break;
+                case"AncienNord":
+
+                    break;
                 // Autres cas pour différents états de jeu
             }
         });
@@ -151,6 +160,9 @@ public class Gui implements ActionListener {
     public String getPseudo(){
         return pseudo;
 
+    }
+    public String getEtatAvant(){
+        return etatAvant;
     }
     public void  setPseudo(String p){
         pseudo=p;

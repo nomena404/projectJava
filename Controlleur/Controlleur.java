@@ -50,7 +50,7 @@ public class Controlleur {
 
 
 
-    public void traiterEntreeUtilisateur(String entree) {
+    public void traiterEntreeForet(String entree) {
         if ("foretDesAnciens".equals(vue.getEtatActuel())) {
             foretDesAnciens.traiterCommande(entree);
         }
