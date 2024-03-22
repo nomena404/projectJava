@@ -4,7 +4,7 @@ import Modele.Exceptions.LePseudoExisteDéjà;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class NvlPseudo extends BasePers {
+public class NvlPseudo extends BaseDonnee {
     private String pseudo;
     private final int numero;
     private static int compteur = 0;

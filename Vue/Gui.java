@@ -107,6 +107,7 @@ public class Gui implements ActionListener {
         }
 
 
+
     }
 
     public void setEtat(String nouvelEtat, String message) {
