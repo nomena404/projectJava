@@ -10,11 +10,10 @@ public class Gui implements ActionListener {
     private JFrame fenetre;
     private JTextField entree;
     private JTextArea texte;
-    private JLabel imageLabel; // Label pour afficher l'image
+    private JLabel imageLabel;
     private Controlleur controlleur;
-    private JButton demarrerBtn;
-    private JButton continuerBtn;
-    private String etat = "demandePseudo"; // Gère les états de l'interface
+    private JButton demarrerBtn, continuerBtn, retour;
+    private String etat = "accueil";
 
     public Gui(Controlleur controlleur) {
         this.controlleur = controlleur;
@@ -25,89 +24,123 @@ public class Gui implements ActionListener {
         fenetre = new JFrame("Royaume de Kattekat");
         fenetre.setLayout(new BorderLayout());
 
-        imageLabel = new JLabel(); // Prépare le JLabel pour l'image
-        chargerImage("/Accueil.png"); // Chargez l'image initiale ici
+        imageLabel = new JLabel(new ImageIcon("Accueil.png")); // Assurez-vous d'avoir l'image appropriée
+        texte = new JTextArea("Bienvenue sur notre jeu. Veuillez choisir une option.");
+        texte.setEditable(false);
 
-        texte = new JTextArea("Bienvenue sur notre jeu. Veuillez entrer votre pseudo.");
         entree = new JTextField();
-        demarrerBtn = new JButton("Démarrer");
+        demarrerBtn = new JButton("S'inscrire");
         continuerBtn = new JButton("Continuer");
+        retour = new JButton("Retour");
 
         JPanel centrePanel = new JPanel(new BorderLayout());
-        centrePanel.add(imageLabel, BorderLayout.CENTER); // Place l'image au centre
+        centrePanel.add(imageLabel, BorderLayout.CENTER);
         centrePanel.add(texte, BorderLayout.SOUTH);
 
         fenetre.add(centrePanel, BorderLayout.CENTER);
         fenetre.add(entree, BorderLayout.SOUTH);
         fenetre.add(demarrerBtn, BorderLayout.EAST);
         fenetre.add(continuerBtn, BorderLayout.WEST);
+        fenetre.add(retour, BorderLayout.NORTH);
 
-        demarrerBtn.setVisible(false);
-        continuerBtn.setVisible(false);
-        texte.setEditable(false);
+        demarrerBtn.addActionListener(e -> demanderNvlPseudo());
+        continuerBtn.addActionListener(e -> demanderPseudo());
+        retour.addActionListener(e -> retourAccueil());
 
+        // Configuration initiale des composants
+        entree.setVisible(false);
+        retour.setVisible(false);
         entree.addActionListener(this);
-        demarrerBtn.addActionListener(e -> controlleur.actionDemarrer());
-        continuerBtn.addActionListener(e -> afficherForetDesAnciens());
-
         fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         fenetre.setSize(new Dimension(500, 500));
         fenetre.setVisible(true);
     }
 
+    private void demanderPseudo() {
+        etat = "demanderPseudo";
+        chargerImage("Objectif.png");
+        texte.setText("Veuillez entrer votre pseudo :");
+        entree.setVisible(true);
+        demarrerBtn.setVisible(false);
+        continuerBtn.setVisible(false);
+        retour.setVisible(true);
+    }
+    private void demanderNvlPseudo() {
+        etat = "demanderNvlPseudo";
+        chargerImage("Objectif.png");
+        texte.setText("Veuillez entrer votre pseudo :");
+        entree.setVisible(true);
+        demarrerBtn.setVisible(false);
+        continuerBtn.setVisible(false);
+        retour.setVisible(true);
+    }
+
+    private void retourAccueil() {
+        etat = "accueil";
+        texte.setText("Bienvenue sur notre jeu. Veuillez choisir une option.");
+        entree.setText("");
+        entree.setVisible(false);
+        demarrerBtn.setVisible(true);
+        continuerBtn.setVisible(true);
+        retour.setVisible(false);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        String input = entree.getText().trim();
-        switch (etat) {
-            case "demandePseudo":
-                controlleur.verifierPseudo(input);
-                break;
-            case "foretDesAnciens":
-                gererForetDesAnciens(input);
-                break;
-            // Ajoutez d'autres cas au besoin
+        if (etat.equals("demanderPseudo")) {
+            controlleur.verifierPseudoJoueur(entree.getText().trim());
         }
+        if (etat.equals("PseudoJoueurInconnu")) {
+            entree.setText(""); // Nettoyer le champ pour la nouvelle saisie
+            etat = "demanderPseudo"; // S'assurer que l'état permet une nouvelle vérification
+        }
+        if("demanderNvlPseudo".equals(etat)){
+            controlleur.nouvellePseudo(entree.getText().trim());
+        }
+
+
     }
+
     public void setEtat(String nouvelEtat, String message) {
         SwingUtilities.invokeLater(() -> {
             etat = nouvelEtat;
             texte.setText(message);
             switch (etat) {
-                case "demarrerJeu":
-                    chargerImage("/Objectif.png"); // Mettez à jour le chemin selon le besoin
-                    demarrerBtn.setVisible(true);
-                    entree.setVisible(false);
+                case "PseudoJoueurInconnu":
+                    demandeReessayerOuRetour();
                     break;
-                case "continuerJeu":
-                    continuerBtn.setVisible(true);
+
+                case"UtilisateurConnu" :
+                    retour.setVisible(false);
+                    entree.setVisible(true);
+                    controlleur.lastZone();
                     break;
+                case "demarrerNvJeu":
+                    retour.setVisible(false);
+                    entree.setVisible(true);
+                    controlleur.firstZone();
+                    break;
+
+                // Autres cas pour différents états de jeu
             }
         });
     }
 
-    private void gererForetDesAnciens(String input) {
-   }
-
-    public void afficherForetDesAnciens() {
-        SwingUtilities.invokeLater(() -> {
-            chargerImage("/ForetDesAnciens.png");
-
-            texte.setText("Vous êtes dans la Forêt des Anciens. Choisissez une direction (NORD, SUD, EST) et décidez quoi prendre.");
-            entree.setVisible(true);
-            entree.setText("");
-            demarrerBtn.setVisible(false);
-            continuerBtn.setVisible(false);
-            etat = "foretDesAnciens"; //
-        });
+    private void demandeReessayerOuRetour() {
+        texte.setText("Pseudo inconnu. Veuillez réessayer ou appuyer sur 'Retour'.");
+        entree.setText("");
     }
 
     public void afficherMessage(String message) {
         SwingUtilities.invokeLater(() -> texte.setText(message));
     }
 
-    private void chargerImage(String cheminImage) {
-        ImageIcon imageIcon = new ImageIcon(getClass().getResource(cheminImage));
+    public void chargerImage(String cheminImage) {
+        ImageIcon imageIcon = new ImageIcon(cheminImage);
         imageLabel.setIcon(imageIcon);
         fenetre.pack();
+    }
+    public  String  getEtat(){
+    return etat;
     }
 }
