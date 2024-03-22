@@ -13,11 +13,16 @@ public class Gui implements ActionListener {
     private JLabel imageLabel;
     private Controlleur controlleur;
     private JButton demarrerBtn, continuerBtn, retour;
-    private String etat = "accueil";
+    private String etatActuel = "accueil";
+    private String etatAvant="";
+    private String pseudo="";
 
     public Gui(Controlleur controlleur) {
         this.controlleur = controlleur;
         initialiserGUI();
+    }
+    public void setEtatAvant(String s){
+        etatAvant=s;
     }
 
     private void initialiserGUI() {
@@ -57,7 +62,7 @@ public class Gui implements ActionListener {
     }
 
     private void demanderPseudo() {
-        etat = "demanderPseudo";
+        etatActuel = "demanderPseudo";
         chargerImage("Objectif.png");
         texte.setText("Veuillez entrer votre pseudo :");
         entree.setVisible(true);
@@ -66,7 +71,7 @@ public class Gui implements ActionListener {
         retour.setVisible(true);
     }
     private void demanderNvlPseudo() {
-        etat = "demanderNvlPseudo";
+        etatActuel = "demanderNvlPseudo";
         chargerImage("Objectif.png");
         texte.setText("Veuillez entrer votre pseudo :");
         entree.setVisible(true);
@@ -76,7 +81,7 @@ public class Gui implements ActionListener {
     }
 
     private void retourAccueil() {
-        etat = "accueil";
+        etatActuel = "accueil";
         texte.setText("Bienvenue sur notre jeu. Veuillez choisir une option.");
         entree.setText("");
         entree.setVisible(false);
@@ -87,14 +92,14 @@ public class Gui implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (etat.equals("demanderPseudo")) {
+        if (etatActuel.equals("demanderPseudo")) {
             controlleur.verifierPseudoJoueur(entree.getText().trim());
         }
-        if (etat.equals("PseudoJoueurInconnu")) {
+        if (etatActuel.equals("PseudoJoueurInconnu")) {
             entree.setText(""); // Nettoyer le champ pour la nouvelle saisie
-            etat = "demanderPseudo"; // S'assurer que l'état permet une nouvelle vérification
+            etatActuel = "demanderPseudo"; // S'assurer que l'état permet une nouvelle vérification
         }
-        if("demanderNvlPseudo".equals(etat)){
+        if("demanderNvlPseudo".equals(etatActuel)){
             controlleur.nouvellePseudo(entree.getText().trim());
         }
 
@@ -103,9 +108,9 @@ public class Gui implements ActionListener {
 
     public void setEtat(String nouvelEtat, String message) {
         SwingUtilities.invokeLater(() -> {
-            etat = nouvelEtat;
+            etatActuel = nouvelEtat;
             texte.setText(message);
-            switch (etat) {
+            switch (etatActuel) {
                 case "PseudoJoueurInconnu":
                     demandeReessayerOuRetour();
                     break;
@@ -140,7 +145,14 @@ public class Gui implements ActionListener {
         imageLabel.setIcon(imageIcon);
         fenetre.pack();
     }
-    public  String  getEtat(){
-    return etat;
+    public  String getEtatActuel(){
+    return etatActuel;
+    }
+    public String getPseudo(){
+        return pseudo;
+
+    }
+    public void  setPseudo(String p){
+        pseudo=p;
     }
 }

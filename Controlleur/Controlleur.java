@@ -22,6 +22,7 @@ public class Controlleur {
             // Vérifie si le pseudo existe déjà. Sinon, crée un nouvel utilisateur.
             if (!pseudo.isEmpty() && !NvlPseudo.pseudoExistant(pseudo)) {
                 new NvlPseudo(pseudo); // Enregistre le nouveau pseudo
+                vue.setPseudo(pseudo);
                 vue.setEtat("demarrerNvJeu", "Pseudo accepté. Bienvenue " + pseudo + "!");
             } else {
                 vue.afficherMessage("Ce pseudo est déjà pris ou invalide. Veuillez en choisir un autre.");
@@ -37,6 +38,7 @@ public class Controlleur {
     public void verifierPseudoJoueur(String pseudo){
         System.out.println("Vérification du pseudo: " + pseudo); // Pour le débogage
         if(NvlPseudo.pseudoExistant(pseudo)){
+            vue.setPseudo(pseudo);
             System.out.println("Le pseudo existe."); // Pour le débogage
             vue.setEtat("UtilisateurConnu", "Bienvenue " + pseudo);
         } else {
@@ -49,7 +51,7 @@ public class Controlleur {
 
 
     public void traiterEntreeUtilisateur(String entree) {
-        if ("foretDesAnciens".equals(vue.getEtat())) {
+        if ("foretDesAnciens".equals(vue.getEtatActuel())) {
             foretDesAnciens.traiterCommande(entree);
         }
         // Ajoutez d'autres conditions pour d'autres zones/états
