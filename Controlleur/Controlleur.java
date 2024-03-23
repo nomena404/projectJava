@@ -70,7 +70,9 @@ public class Controlleur {
 
     public void lastZone() {
         EtatJeu etat=  EtatJeu.recupererEtatJeu(vue.getPseudo());
+        System.out.println(EtatJeu.recupererEtatJeu(vue.getPseudo()));
         switch (etat.getZone()){
+
             case"foretDesAnciens":
                 vue.setEtat("foretDesAnciens","Bienvenue +"+ vue.getPseudo());
                 vue.chargerImage("Images/foret/"+etat.getEtat()+".png");

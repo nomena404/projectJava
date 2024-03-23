@@ -26,31 +26,33 @@ public class EtatJeu extends BaseDonnee {
         this.zone = zone;
     }
     public static EtatJeu recupererEtatJeu(String pseud) {
-        JSONParser jsonParser = new JSONParser();
+        JSONArray jsonArray = lectureJsonEtat(); // Obtention du JSONArray
 
-        try (FileReader reader = new FileReader(ETAT_JEU)) {
-            // Lecture du fichier JSON existant
-            Object obj = jsonParser.parse(reader);
-            JSONArray jsonArray = (JSONArray) obj;
-
-            for (Object item : jsonArray) {
-                JSONObject etatJeuObj = (JSONObject) item;
-                String pseudoJson = (String) etatJeuObj.get("pseudo");
-                if (pseudoJson.equals(pseud)) {
-
-                    Set<String> inventair = new HashSet<>((JSONArray)etatJeuObj.get("Inventaire"));
-                    String eta = (String) etatJeuObj.get("Etat");
-                    String zon = (String) etatJeuObj.get("Zone");
-
-                    return new EtatJeu(pseud, inventair, eta, zon);
+        for (Object item : jsonArray) {
+            JSONObject etatJeuObj = (JSONObject) item;
+            String pseudoJson = (String) etatJeuObj.get("pseudo");
+            if (pseudoJson != null && pseudoJson.equals(pseud)) {
+                JSONArray inventaireArray = (JSONArray) etatJeuObj.get("Inventaire");
+                Set<String> inventaire = new HashSet<>();
+                if (inventaireArray != null) {
+                    for (Object invItem : inventaireArray) {
+                        inventaire.add(String.valueOf(invItem));
+                    }
                 }
+
+                // Extraction de l'état et de la zone
+                String eta = (String) etatJeuObj.get("Etat");
+                String zon = (String) etatJeuObj.get("Zone");
+
+                // Création et retour de l'objet EtatJeu
+                return new EtatJeu(pseudoJson, inventaire, eta, zon);
             }
-        } catch (IOException | ParseException e) {
-            System.err.println("Erreur lors de la lecture du fichier JSON : " + e.getMessage());
         }
 
-        return null; // Si le pseudo n'est pas trouvé, retourne null
+        // Retourne null ou lance une exception si le pseudonyme n'est pas trouvé
+        return null;
     }
+
 
 
     public String getPseudo() {
