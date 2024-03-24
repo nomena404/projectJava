@@ -60,6 +60,7 @@ public class ZoneForetDesAnciens implements IZone {
                 break;
             case"tambour_baton":
                 afficherErmite();
+                break;
 
             case"arbre":
                 sortirZone();
@@ -83,13 +84,17 @@ public class ZoneForetDesAnciens implements IZone {
     }
 
     private void sortirZone() {
-        gui.chargerImage("suite.png");
-        gui.setEtat("foretDesAnciens"," "+"Félicitations tu viens d'avoir une force incroyable :l'INVISIBILITE ");
+
+        gui.chargerImage("Images/crane/zonePrincipal.png");
+        gui.setEtatAvant("foretDesAnciens");
+        gui.setEtat("foretDesCranes"," "+"Félicitations tu viens d'avoir une force incroyable :l'INVISIBILITE ");
 
     }
 
     private void afficherErmite() {
+        System.out.println("EST");
         gui.chargerImage("Images/foret/ZoneEstErmite.png");
+        gui.setEtatAvant("ZoneEstErmite");
         gui.setEtat("foretDesAnciens",""+"Je grandis sans fin, plus vieux que les montagnes,\n nourrissant la vie sans jamais la prendre. Qui suis-je ? ");
 
     }

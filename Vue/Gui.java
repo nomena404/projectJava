@@ -85,6 +85,7 @@ public class Gui implements ActionListener {
 
     private void retourAccueil() {
         etatActuel = "accueil";
+        chargerImage("Images/Accueil/Accueil.png");
         texte.setText("Bienvenue sur notre jeu. Veuillez choisir une option.");
         entree.setText("");
         entree.setVisible(false);
@@ -99,13 +100,19 @@ public class Gui implements ActionListener {
             controlleur.verifierPseudoJoueur(entree.getText().trim());
         }
         if (etatActuel.equals("PseudoJoueurInconnu")) {
-            entree.setText(""); // Nettoyer le champ pour la nouvelle saisie
-            etatActuel = "demanderPseudo"; // S'assurer que l'état permet une nouvelle vérification
+            entree.setText("");
+            etatActuel = "demanderPseudo";
         }
         if("demanderNvlPseudo".equals(etatActuel)){
+            entree.setText("");
             controlleur.nouvellePseudo(entree.getText().trim());
         }
         if(etatActuel.equals("foretDesAnciens")){
+            entree.setText("");
+            controlleur.traiterEntreeForet(entree.getText().trim());
+        }
+        if("foretDesCranes".equals(etatActuel)){
+            entree.setText("");
             controlleur.traiterEntreeForet(entree.getText().trim());
         }
 
@@ -134,6 +141,9 @@ public class Gui implements ActionListener {
                     break;
 
                 case "foretDesAnciens":
+                    entree.setVisible(true);
+                    break;
+                case "foretDesCranes" :
                     entree.setVisible(true);
                     break;
 
