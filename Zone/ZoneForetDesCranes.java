@@ -13,57 +13,104 @@ public class ZoneForetDesCranes implements IZone{
 
     private Gui gui;
     private ArrayList<String> elements = new ArrayList<>(Arrays.asList("pierre","crane","baton","hibou"));
-    private Set<String> inventaire=new HashSet<String>();
+
     public ZoneForetDesCranes(Gui gui){
         this.gui=gui;
     }
     @Override
     public void entrer() {
-        gui.chargerImage("Images/crane/ForetDesAnciens.png");
-        gui.afficherMessage("Vous êtes dans la Forêt des crânes. Choisissez une direction (NORD, SUD, EST).");
-        gui.setEtat("foretDesCranes", "Vous êtes dans la Forêt des Anciens. Choisissez une direction (NORD, SUD, EST).");
+        System.out.println(gui.getEtatActuel()+ "entree");
+        System.out.println(gui.getEtatAvant()+ "entree etat ");
+        gui.chargerImage("Images/crane/zonePrincipal.png");
+        gui.setEtatAvant("zonePrincipalForet");
+        gui.setEtat("foretDesCranes", "Vous êtes dans la Forêt des Cranes. Choisissez une direction (NORD, SUD, EST).");
 
 
     }
 
     @Override
     public void traiterCommande(String commande) {
-        if(commande.toLowerCase()=="nord"){
-           allerNord();
-
-        }
-        if (commande.toLowerCase()=="sud"){
+        System.out.println(commande);
+        System.out.println("zone i ci");
+        if ("nord".equals(commande.toLowerCase().trim())) {
+            System.out.println("on est dans la boucle iff");
+            allerNord();
+        } else if ("sud".equals(commande.toLowerCase().trim())) {
             allerSud();
+        } else if ("est".equals(commande.toLowerCase().trim())) {
+            allerEst();
+        } else if ("pierre_pierre".equals(commande.toLowerCase().trim()) && gui.list().contains("pierre")) {
+            afficheErmite();
         }
-        if (commande.toLowerCase()=="est"){
+        else if ("quitter".equals(commande.toLowerCase().trim())) {
+            quitterEtSauvegarder();
+        }
+        else if ("retour".equals(commande.toLowerCase().trim())) {
+           retour();
+        }
+        else if (elements.contains(commande.toLowerCase())) {
+           ajouteObj(commande.toLowerCase());
+        }else if ("enigme".equals(commande.toLowerCase().trim())) {
+            sortirZone();
+        }
+        else {
+            gui.afficherMessage("Commande inconnue. Essayez à nouveau.");
+        }
+    }
+
+    private void sortirZone() {
+      gui.chargerImage("suite.png");
+      gui.setEtatAvant("foretDesCranes");
+      gui.setEtat("grotteDesAnciens","biennvenu dans la suite erik");
+    }
+
+    private void afficheErmite() {
+        System.out.println("nord zone");
+        System.out.println(gui.getEtatAvant() + " etat zone nord");
+        gui.chargerImage("Images/crane/zoneEstEsprit.png");
+        gui.setEtatAvant("zoneEst");
+        gui.setEtat("foretDesCranes"," Vous etes a l'est" + "enigme");
+
+
+    }
+
+    private void retour() {
+        if(gui.getEtatAvant().equals("zoneEst")){
+            allerEst();
+        } else if (gui.getEtatAvant().equals("zoneSud")) {
+            allerSud();
+        }else if(gui.getEtatAvant().equals("zoneEst")){
             allerEst();
         }
-        if(elements.contains(commande.toLowerCase())){
-            ajouteObj(commande.toLowerCase());
-        }
-        if(commande.toLowerCase()=="quitter"){
-            quitterEtSauvegarder();
-            }
-        }
+        entrer();
+
+    }
 
     private void allerNord() {
+        System.out.println("nord zone");
+        System.out.println(gui.getEtatAvant() + " etat zone nord");
+        gui.chargerImage("Images/crane/zoneNord.png");
         gui.setEtatAvant("zoneNord");
-        gui.setEtat("foretDesAnciens"," Vous etes au Nord");
+        gui.setEtat("foretDesCranes"," Vous etes au Nord");
 
     }
 
     private void allerSud() {
+        System.out.println("sud");
+        gui.chargerImage("Images/crane/zoneSud.png");
         gui.setEtatAvant("zoneSud");
-        gui.setEtat("foretDesAnciens"," Vous etes au Sud");
+        gui.setEtat("foretDesCranes"," Vous etes au Sud");
     }
 
     private void allerEst() {
+        System.out.println("est");
+        gui.chargerImage("Images/crane/zoneEst.png");
         gui.setEtatAvant("zoneEst");
-        gui.setEtat("foretDesAnciens"," Vous etes au Est");
+        gui.setEtat("foretDesCranes"," Vous etes au Est");
     }
 
     private void ajouteObj(String elt) {
-        inventaire.add(elt);
+        gui.addElement(elt);
         gui.setEtat("foretDesCranes", "Vous avez ajouter "+ elt);
     }
 

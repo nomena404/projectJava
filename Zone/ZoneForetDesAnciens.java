@@ -6,9 +6,9 @@ import Vue.Gui;
 import java.util.*;
 
 public class ZoneForetDesAnciens implements IZone {
-    public List<String> elemnts_nord=new ArrayList<>(Arrays.asList("tambour", "pierre", "buisson","fleur"));
+    public List<String> elemnts =new ArrayList<>(Arrays.asList("tambour", "pierre", "buisson","fleur"));
 
-    public List<String> elemnts_sud=new ArrayList<>(Arrays.asList("pierre", "baton"));
+    public List<String> elemnts_sud=new ArrayList<>(Arrays.asList("tambour", "baton"));
 
     private Gui gui;
     private  Set<String> inventaire=new HashSet<String>();
@@ -27,55 +27,30 @@ public class ZoneForetDesAnciens implements IZone {
 
     @Override
     public void traiterCommande(String commande) {
-        switch (commande.toLowerCase()) {
-            case "nord":
-                allerAuNord();
-                break;
-            case "sud":
-                allerAuSud();
-                break;
-            case "est":
-                allerAuEst();
-                break;
-            case "prendre":
-                prendreObjet();
-                break;
-            case "inventaire":
-                afficherInventaire();
-                break;
-            case "pierre":
-                ajoutInventaire(commande);
-                break;
-            case "tambour":
-               ajoutInventaire(commande);
-                break;
-            case "baton":
-                ajoutInventaire(commande);
-                break;
-            case "buisson":
-                ajoutInventaire(commande);
-                break;
-            case "hache":
-                ajoutInventaire(commande);
-                break;
-            case"tambour_baton":
-                afficherErmite();
-                break;
-
-            case"arbre":
-                sortirZone();
-                break ;
-
-            case "quitter":
-                quitterEtSauvegarder();
-                break ;
-
-            default:
-                gui.afficherMessage("Commande inconnue. Essayez à nouveau.");
-                break;
+        if("nord".equals(commande.toLowerCase().trim())){
+            allerAuNord();
+        } else if("sud".equals(commande.toLowerCase().trim())){
+            allerAuSud();
+        } else if("est".equals(commande.toLowerCase().trim())){
+            allerAuEst();
+        } else if(elemnts.contains(commande.toLowerCase())){
+            ajoutInventaire(commande.toLowerCase());
+        } else if("inventaire".equals(commande.toLowerCase().trim())){
+            afficherInventaire();
+        } else if("quitter".equals(commande.toLowerCase().trim())){
+            quitterEtSauvegarder();
+        } else if("arbre".equals(commande.toLowerCase().trim())){
+            sortirZone();
+        } else if(gui.list().contains(Arrays.asList("tambour","baton")) && "tambour_baton".equals(commande.toLowerCase())){
+            afficherErmite();
+        } else {
+            gui.afficherMessage("Commande inconnue. Essayez à nouveau.");
         }
 
+
     }
+
+
 
     private void quitterEtSauvegarder() {
         EtatJeu etatJeu= new EtatJeu(gui.getPseudo(),gui.list(),gui.getEtatAvant(), gui.getEtatActuel());
@@ -85,9 +60,13 @@ public class ZoneForetDesAnciens implements IZone {
 
     private void sortirZone() {
 
+        System.out.println("zone Ici");
         gui.chargerImage("Images/crane/zonePrincipal.png");
         gui.setEtatAvant("foretDesAnciens");
-        gui.setEtat("foretDesCranes"," "+"Félicitations tu viens d'avoir une force incroyable :l'INVISIBILITE ");
+
+        gui.setEtat("foretDesCranes"," "+"Félicitations tu viens d'avoir une force incroyable :l'INVISIBILITE\n suite");
+
+        System.out.println(gui.getEtatActuel());
 
     }
 
@@ -111,21 +90,8 @@ public class ZoneForetDesAnciens implements IZone {
         gui.setEtat("foretDesAnciens","Voici les elements que vous possédez :\n"+ gui.inventaire());
     }
     private void ajoutInventaire(String e){
-
-
-        gui.addElement(e);
+    gui.addElement(e);
         gui.setEtat("foretDesAnciens","Vous avez pris:"+e);
-
-    }
-
-    private void prendreObjet() {
-        if(gui.getEtatAvant()=="ZoneSud"){
-            gui.setEtat("foretDesAnciens","Vous etes au Sud\n Prenez des elements");
-  }
-        if(gui.getEtatAvant()=="ZoneNord"){
-            gui.setEtat("foretDesAnciens","Vous etes au Nord\n Prenez des elements");
-        }
-
 
     }
 

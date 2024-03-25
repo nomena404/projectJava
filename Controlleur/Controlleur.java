@@ -4,6 +4,7 @@ import Modele.EtatJeu;
 import Modele.Exceptions.LePseudoExisteDéjà;
 import Modele.NvlPseudo;
 import Vue.Gui;
+import Zone.GrotteDesAnciens;
 import Zone.ZoneForetDesAnciens;
 import Zone.ZoneForetDesCranes;
 
@@ -12,20 +13,21 @@ public class Controlleur {
     private Gui vue;
     private ZoneForetDesAnciens foretDesAnciens;
     private ZoneForetDesCranes foretDesCranes;
+    private GrotteDesAnciens grotteDesAnciens;
 
     public Controlleur() {
         javax.swing.SwingUtilities.invokeLater(() -> {
             vue = new Gui(this);
             foretDesAnciens = new ZoneForetDesAnciens(vue);
             foretDesCranes= new ZoneForetDesCranes(vue);
+            grotteDesAnciens=new GrotteDesAnciens(vue);
         });
     }
 
     public void nouvellePseudo(String pseudo) {
         try {
-            // Vérifie si le pseudo existe déjà. Sinon, crée un nouvel utilisateur.
             if (!pseudo.isEmpty() && !NvlPseudo.pseudoExistant(pseudo)) {
-                new NvlPseudo(pseudo); // Enregistre le nouveau pseudo
+                new NvlPseudo(pseudo);
                 vue.setPseudo(pseudo);
                 vue.setEtat("demarrerNvJeu", "Pseudo accepté. Bienvenue " + pseudo + "!");
             } else {
@@ -58,22 +60,14 @@ public class Controlleur {
         if ("foretDesAnciens".equals(vue.getEtatActuel())) {
             foretDesAnciens.traiterCommande(entree);
         }
-        if("foretDesCranes".equals(vue.getEtatActuel())){
-            foretDesCranes.traiterCommande(entree);
-        }
 
     }
-
-    /*public static void main(String[] args) {
-        new Controlleur();
-    }
-
-     */
 
     public void firstZone(){
         foretDesAnciens.entrer();
     }
 
+    // lastZone permet de charger le contenu du du joueur qui se connecte
     public void lastZone() {
         EtatJeu etat=  EtatJeu.recupererEtatJeu(vue.getPseudo());
 
@@ -88,4 +82,26 @@ public class Controlleur {
 
 
     }
+
+
+    public void traiterEntreeCranes(String trim) {
+        System.out.println("hola entrerr");
+        if("foretDesCranes".equals(vue.getEtatActuel())){
+            foretDesCranes.traiterCommande(trim);
+
+        }
+    }
+    public void traiterEntreeGrotte(String trim) {
+        System.out.println("hola crane");
+        if("grotteDesAnciens".equals(vue.getEtatActuel())){
+
+            grotteDesAnciens.traiterCommande(trim);
+
+        }
+    }
+
+    public void next() {
+        foretDesCranes.entrer();
+    }
+    public  void nextt(){ grotteDesAnciens.entrer();}
 }

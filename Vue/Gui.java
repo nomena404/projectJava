@@ -104,17 +104,28 @@ public class Gui implements ActionListener {
             etatActuel = "demanderPseudo";
         }
         if("demanderNvlPseudo".equals(etatActuel)){
-            entree.setText("");
             controlleur.nouvellePseudo(entree.getText().trim());
         }
         if(etatActuel.equals("foretDesAnciens")){
-            entree.setText("");
             controlleur.traiterEntreeForet(entree.getText().trim());
         }
-        if("foretDesCranes".equals(etatActuel)){
-            entree.setText("");
-            controlleur.traiterEntreeForet(entree.getText().trim());
+        if("foretDesCranes".equals(etatActuel) && entree.getText().trim()=="suite" ){
+            System.out.println("here ");
+            controlleur.next();
         }
+        if(etatActuel.equals("foretDesCranes")){
+            controlleur.traiterEntreeCranes(entree.getText().trim());
+        }
+        if(etatActuel.equals("grotteDesAnciens") && entree.getText().trim().equals("suite") ){
+            System.out.println(" actionListener ");
+            controlleur.nextt();
+        }
+        if(etatActuel.equals("grotteDesAnciens")){
+            System.out.println(" on passe etta");
+            controlleur.traiterEntreeGrotte(entree.getText().trim());
+        }
+
+
 
 
 
@@ -146,6 +157,11 @@ public class Gui implements ActionListener {
                 case "foretDesCranes" :
                     entree.setVisible(true);
                     break;
+                case "grotteDesAnciens" :
+                    System.out.println("case grotte");
+                    entree.setVisible(true);
+                    break;
+
 
                 // Autres cas pour différents états de jeu
             }
