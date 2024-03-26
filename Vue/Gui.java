@@ -172,6 +172,14 @@ public class Gui implements ActionListener {
     public void addElement(String e){
         inventaire.add(e);
     }
+    public boolean veriferElement(String e) {
+    	for(String s : inventaire) {
+    		if(e.equals(s)) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
     public String inventaire(){
         if(inventaire.size()==0){
             return "Vous avez zero elements";

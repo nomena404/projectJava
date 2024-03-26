@@ -84,7 +84,7 @@ public class ZoneForetDesAnciens implements IZone {
 
     private void sortirZone() {
         gui.chargerImage("suite.png");
-        gui.setEtat("foretDesAnciens"," "+"Félicitations tu viens d'avoir une force incroyable :l'INVISIBILITE ");
+        gui.setEtat("foretDesAnciens"," "+"Félicitations tu viens d'avoir une force incroyable :la SAGESSE ");
 
     }
 
@@ -115,10 +115,10 @@ public class ZoneForetDesAnciens implements IZone {
 
     private void prendreObjet() {
         if(gui.getEtatAvant()=="ZoneSud"){
-            gui.setEtat("foretDesAnciens","Vous etes au Sud\n Prenez des elements");
+            gui.setEtat("foretDesAnciens","Vous etes au Sud\n Prenez des elements :\n pierre\n baton\n  ");
   }
         if(gui.getEtatAvant()=="ZoneNord"){
-            gui.setEtat("foretDesAnciens","Vous etes au Nord\n Prenez des elements");
+            gui.setEtat("foretDesAnciens","Vous etes au Nord\n Prenez des elements:\n tambour\n pierre\n buisson\n fleur\n ");
         }
 
 
