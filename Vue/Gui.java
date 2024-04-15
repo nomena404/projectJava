@@ -1,10 +1,13 @@
 package Vue;
 
 import Controlleur.Controlleur;
+import org.json.simple.parser.ParseException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -66,6 +69,7 @@ public class Gui implements ActionListener {
 
     private void demanderPseudo() {
         etatActuel = "demanderPseudo";
+        System.out.println("Utilisateur connu" + etatActuel);
         chargerImage("Images/Accueil/Objectif.png");
         texte.setText("Veuillez entrer votre pseudo :");
         entree.setVisible(true);
@@ -107,7 +111,13 @@ public class Gui implements ActionListener {
             controlleur.nouvellePseudo(entree.getText().trim());
         }
         if(etatActuel.equals("foretDesAnciens")){
-            controlleur.traiterEntreeForet(entree.getText().trim());
+            try {
+                controlleur.traiterEntreeForet(entree.getText().trim());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (ParseException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         if("foretDesCranes".equals(etatActuel) && entree.getText().trim()=="suite" ){
             System.out.println("here ");
@@ -143,7 +153,13 @@ public class Gui implements ActionListener {
                 case"UtilisateurConnu" :
                     retour.setVisible(false);
                     entree.setVisible(true);
-                    controlleur.lastZone();
+                    try {
+                        controlleur.lastZone();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
                 case "demarrerNvJeu":
                     retour.setVisible(false);

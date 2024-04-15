@@ -7,6 +7,9 @@ import Vue.Gui;
 import Zone.GrotteDesAnciens;
 import Zone.ZoneForetDesAnciens;
 import Zone.ZoneForetDesCranes;
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
 
 
 public class Controlleur {
@@ -42,7 +45,7 @@ public class Controlleur {
 
 
     public void verifierPseudoJoueur(String pseudo){
-        System.out.println("Vérification du pseudo: " + pseudo); // Pour le débogage
+        System.out.println("Vérification du pseudo: " + pseudo);
         if(NvlPseudo.pseudoExistant(pseudo)){
             vue.setPseudo(pseudo);
             System.out.println("Le pseudo existe.");
@@ -56,7 +59,7 @@ public class Controlleur {
 
 
 
-    public void traiterEntreeForet(String entree) {
+    public void traiterEntreeForet(String entree) throws IOException, ParseException {
         if ("foretDesAnciens".equals(vue.getEtatActuel())) {
             foretDesAnciens.traiterCommande(entree);
         }
@@ -68,8 +71,9 @@ public class Controlleur {
     }
 
     // lastZone permet de charger le contenu du du joueur qui se connecte
-    public void lastZone() {
+    public void lastZone() throws IOException, ParseException {
         EtatJeu etat=  EtatJeu.recupererEtatJeu(vue.getPseudo());
+        System.out.println(etat);
 
         System.out.println(EtatJeu.recupererEtatJeu(vue.getPseudo()));
         switch (etat.getZone()){

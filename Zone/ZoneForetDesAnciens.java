@@ -1,9 +1,14 @@
 package Zone;
 
+import Modele.BaseDonnee;
 import Modele.EtatJeu;
 import Vue.Gui;
+import org.json.simple.parser.ParseException;
 
+import java.io.IOException;
 import java.util.*;
+
+import static Modele.BaseDonnee.ecritureJson;
 
 public class ZoneForetDesAnciens implements IZone {
     public List<String> elemnts =new ArrayList<>(Arrays.asList("tambour", "pierre", "buisson","fleur"));
@@ -26,7 +31,7 @@ public class ZoneForetDesAnciens implements IZone {
     }
 
     @Override
-    public void traiterCommande(String commande) {
+    public void traiterCommande(String commande) throws IOException, ParseException {
         if("nord".equals(commande.toLowerCase().trim())){
             allerAuNord();
         } else if("sud".equals(commande.toLowerCase().trim())){
@@ -52,8 +57,8 @@ public class ZoneForetDesAnciens implements IZone {
 
 
 
-    private void quitterEtSauvegarder() {
-        EtatJeu etatJeu= new EtatJeu(gui.getPseudo(),gui.list(),gui.getEtatAvant(), gui.getEtatActuel());
+    private void quitterEtSauvegarder() throws IOException, ParseException {
+        BaseDonnee.ecritureJson(gui.getPseudo(),gui.list(),gui.getEtatAvant(), gui.getEtatActuel());
         gui.chargerImage("bye.png");
         gui.setEtat("foretDesAnciens"," Aurevoir");
     }

@@ -19,14 +19,16 @@ public class EtatJeu extends BaseDonnee {
     private String zone;
 
     public EtatJeu(String pseudo, Set<String> inventaire, String etat, String zone) {
-        ecritureJson( pseudo, inventaire, etat, zone);
+
         this.pseudo = pseudo;
         this.inventaire = inventaire;
         this.etat = etat;
         this.zone = zone;
     }
-    public static EtatJeu recupererEtatJeu(String pseud) {
-        JSONArray jsonArray = lectureJsonEtat(); // Obtention du JSONArray
+    public static EtatJeu recupererEtatJeu(String pseud) throws IOException, ParseException {
+        System.out.println("ici");
+        JSONArray jsonArray = lectureJsonEtat(ETAT_JEU);
+        System.out.println(jsonArray.toJSONString()+ "here");
 
         for (Object item : jsonArray) {
             JSONObject etatJeuObj = (JSONObject) item;
@@ -40,16 +42,16 @@ public class EtatJeu extends BaseDonnee {
                     }
                 }
 
-                // Extraction de l'état et de la zone
+
                 String eta = (String) etatJeuObj.get("Etat");
                 String zon = (String) etatJeuObj.get("Zone");
+                System.out.println(eta+"\n"+ zon + "nothing here");
 
-                // Création et retour de l'objet EtatJeu
+
                 return new EtatJeu(pseudoJson, inventaire, eta, zon);
             }
         }
 
-        // Retourne null ou lance une exception si le pseudonyme n'est pas trouvé
         return null;
     }
 
