@@ -1,6 +1,8 @@
 package Vue;
 
 import Controlleur.Controlleur;
+import Modele.BaseDonnee;
+import Modele.EtatJeu;
 import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
@@ -215,7 +217,10 @@ public class Gui implements ActionListener {
         inventaire.add(e);
     }
     public String inventaire(){
-        if(inventaire.size()==0){
+        if(EtatJeu.pseudoSauvegarde(pseudo)==true){
+            inventaire.addAll(BaseDonnee.listInventaire(pseudo));
+            return inventaire.toString();
+        } else if (inventaire.size()==0) {
             return "Vous avez zero elements";
         }
         return inventaire.toString();

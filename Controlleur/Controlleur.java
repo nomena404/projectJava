@@ -1,5 +1,6 @@
 package Controlleur;
 
+import Modele.BaseDonnee;
 import Modele.EtatJeu;
 import Modele.Exceptions.LePseudoExisteDéjà;
 import Modele.NvlPseudo;
@@ -13,7 +14,7 @@ import java.io.IOException;
 
 
 public class Controlleur {
-    private Gui vue;
+    private static Gui vue;
     private ZoneForetDesAnciens foretDesAnciens;
     private ZoneForetDesCranes foretDesCranes;
     private GrotteDesAnciens grotteDesAnciens;
@@ -30,7 +31,7 @@ public class Controlleur {
     public void nouvellePseudo(String pseudo) {
         try {
             if (!pseudo.isEmpty() && !NvlPseudo.pseudoExistant(pseudo)) {
-                new NvlPseudo(pseudo);
+                NvlPseudo pseudo1=  new NvlPseudo(pseudo);
                 vue.setPseudo(pseudo);
                 vue.setEtat("demarrerNvJeu", "Pseudo accepté. Bienvenue " + pseudo + "!");
             } else {
@@ -74,13 +75,20 @@ public class Controlleur {
     public void lastZone() throws IOException, ParseException {
         EtatJeu etat=  EtatJeu.recupererEtatJeu(vue.getPseudo());
         System.out.println(etat);
-
         System.out.println(EtatJeu.recupererEtatJeu(vue.getPseudo()));
         switch (etat.getZone()){
-
             case"foretDesAnciens":
                 vue.setEtat("foretDesAnciens","Bienvenue +"+ vue.getPseudo());
                 vue.chargerImage("Images/foret/"+etat.getEtat()+".png");
+                break;
+
+            case"foretDesCranes":
+                vue.setEtat("foretDesCranes","Bienvenue +"+ vue.getPseudo());
+                vue.chargerImage("Images/crane/"+etat.getEtat()+".png");
+                break;
+            case"grotteDesAnciens":
+                vue.setEtat("grotteDesAnciens","Bienvenue +"+ vue.getPseudo());
+                vue.chargerImage("Images/grotte/"+etat.getEtat()+".png");
                 break;
         }
 
@@ -89,7 +97,7 @@ public class Controlleur {
 
 
     public void traiterEntreeCranes(String trim) {
-        System.out.println("hola entrerr");
+
         if("foretDesCranes".equals(vue.getEtatActuel())){
             foretDesCranes.traiterCommande(trim);
 
@@ -101,6 +109,20 @@ public class Controlleur {
 
             grotteDesAnciens.traiterCommande(trim);
 
+        }
+    }
+
+
+    public static void quitterEtSauvegarder() {
+        if ((vue.list()).isEmpty()) {
+            vue.list().add("vide");
+        } else if (EtatJeu.pseudoSauvegarde(vue.getPseudo())) {
+            BaseDonnee.suppressionEtat(vue.getPseudo());
+            BaseDonnee.ecritureEtatJson(vue.getPseudo(), vue.list(), vue.getEtatAvant(), vue.getEtatActuel());
+        } else {
+            BaseDonnee.ecritureEtatJson(vue.getPseudo(), vue.list(), vue.getEtatAvant(), vue.getEtatActuel());
+            vue.chargerImage("bye.png");
+            vue.setEtat(vue.getEtatActuel(), " Aurevoir");
         }
     }
 

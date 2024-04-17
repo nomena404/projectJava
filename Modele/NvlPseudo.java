@@ -16,7 +16,7 @@ public class NvlPseudo extends BaseDonnee {
         this.pseudo = pseudo;
         compteur++;
         numero = compteur;
-        ecritureJson(this); // Directement sauvegarder le nouveau pseudo
+        ecritureEtatJson(this);
     }
 
     public String getPseudo() {
@@ -32,7 +32,6 @@ public class NvlPseudo extends BaseDonnee {
         return numero + "  " + pseudo;
     }
 
-    // Vérifie si le pseudo existe déjà dans le fichier JSON
     public static boolean pseudoExistant(String ps) {
         JSONArray jsonArray = lectureJson();
         for (Object o : jsonArray) {

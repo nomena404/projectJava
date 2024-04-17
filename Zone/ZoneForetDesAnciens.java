@@ -1,19 +1,17 @@
 package Zone;
 
-import Modele.BaseDonnee;
-import Modele.EtatJeu;
 import Vue.Gui;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.*;
 
-import static Modele.BaseDonnee.ecritureJson;
+import static Controlleur.Controlleur.quitterEtSauvegarder;
+import static Modele.BaseDonnee.ecritureEtatJson;
 
 public class ZoneForetDesAnciens implements IZone {
-    public List<String> elemnts =new ArrayList<>(Arrays.asList("tambour", "pierre", "buisson","fleur"));
+    public List<String> elemnts =new ArrayList<>(Arrays.asList("tambour", "pierre","baton", "buisson","fleur"));
 
-    public List<String> elemnts_sud=new ArrayList<>(Arrays.asList("tambour", "baton"));
 
     private Gui gui;
     private  Set<String> inventaire=new HashSet<String>();
@@ -31,7 +29,7 @@ public class ZoneForetDesAnciens implements IZone {
     }
 
     @Override
-    public void traiterCommande(String commande) throws IOException, ParseException {
+    public void traiterCommande(String commande)  {
         if("nord".equals(commande.toLowerCase().trim())){
             allerAuNord();
         } else if("sud".equals(commande.toLowerCase().trim())){
@@ -56,22 +54,13 @@ public class ZoneForetDesAnciens implements IZone {
     }
 
 
-
-    private void quitterEtSauvegarder() throws IOException, ParseException {
-        BaseDonnee.ecritureJson(gui.getPseudo(),gui.list(),gui.getEtatAvant(), gui.getEtatActuel());
-        gui.chargerImage("bye.png");
-        gui.setEtat("foretDesAnciens"," Aurevoir");
-    }
-
     private void sortirZone() {
 
         System.out.println("zone Ici");
         gui.chargerImage("Images/crane/zonePrincipal.png");
         gui.setEtatAvant("foretDesAnciens");
-
         gui.setEtat("foretDesCranes"," "+"Félicitations tu viens d'avoir une force incroyable :l'INVISIBILITE\n suite");
 
-        System.out.println(gui.getEtatActuel());
 
     }
 
@@ -116,6 +105,6 @@ public class ZoneForetDesAnciens implements IZone {
     }
 
 
-    // Ajoutez la gestion des autres directions et commandes
+
 
 }

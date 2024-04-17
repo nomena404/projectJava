@@ -12,8 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class EtatJeu extends BaseDonnee {
-    private static final String ETAT_JEU = "etatJeu.json";
-   private String pseudo;
+    private String pseudo;
     private Set<String> inventaire;
     private String etat;
     private String zone;
@@ -25,34 +24,37 @@ public class EtatJeu extends BaseDonnee {
         this.etat = etat;
         this.zone = zone;
     }
-    public static EtatJeu recupererEtatJeu(String pseud) throws IOException, ParseException {
-        System.out.println("ici");
-        JSONArray jsonArray = lectureJsonEtat(ETAT_JEU);
-        System.out.println(jsonArray.toJSONString()+ "here");
-
+    public static EtatJeu recupererEtatJeu(String pseudo)  {
+        JSONArray jsonArray = lectureJsonEtat();
         for (Object item : jsonArray) {
             JSONObject etatJeuObj = (JSONObject) item;
             String pseudoJson = (String) etatJeuObj.get("pseudo");
-            if (pseudoJson != null && pseudoJson.equals(pseud)) {
-                JSONArray inventaireArray = (JSONArray) etatJeuObj.get("Inventaire");
-                Set<String> inventaire = new HashSet<>();
-                if (inventaireArray != null) {
-                    for (Object invItem : inventaireArray) {
-                        inventaire.add(String.valueOf(invItem));
-                    }
-                }
 
-
+            if (pseudoJson.equals(pseudo)) {
+                String inventaire = (String ) etatJeuObj.get("Inventaire");
                 String eta = (String) etatJeuObj.get("Etat");
                 String zon = (String) etatJeuObj.get("Zone");
                 System.out.println(eta+"\n"+ zon + "nothing here");
-
-
-                return new EtatJeu(pseudoJson, inventaire, eta, zon);
+             return new EtatJeu(pseudoJson, Utile.StringEnList(inventaire), eta, zon);
             }
+
         }
 
         return null;
+    }
+
+    public static boolean pseudoSauvegarde(String pseudo)  {
+        JSONArray jsonArray = lectureJsonEtat();
+        for (Object item : jsonArray) {
+            JSONObject etatJeuObj = (JSONObject) item;
+            String pseudoJson = (String) etatJeuObj.get("pseudo");
+            if (pseudoJson.equals(pseudo)) {
+                return true;
+            }
+
+        }
+
+        return false;
     }
 
 

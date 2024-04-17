@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import static Controlleur.Controlleur.quitterEtSauvegarder;
+
 public class ZoneForetDesCranes implements IZone{
 
     private Gui gui;
@@ -114,11 +116,6 @@ public class ZoneForetDesCranes implements IZone{
         gui.setEtat("foretDesCranes", "Vous avez ajouter "+ elt);
     }
 
-    private void quitterEtSauvegarder() {
-        EtatJeu etatJeu= new EtatJeu(gui.getPseudo(),gui.list(),gui.getEtatAvant(), gui.getEtatActuel());
-        gui.chargerImage("bye.png");
-        gui.setEtat("foretDesCranes"," Aurevoir");
-    }
 
 
 }
