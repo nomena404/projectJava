@@ -21,23 +21,39 @@ public class Gui implements ActionListener {
     private Controlleur controlleur;
     private JButton demarrerBtn, continuerBtn, retour;
     private String etatActuel = "accueil";
-    private String etatAvant="";
+    private String zoneActuel ="";
+    private String zoneAvant ="";
+
+
+
+
+
     private String pseudo="";
+
     private Set<String> inventaire=new HashSet<String>();
 
     public Gui(Controlleur controlleur) {
         this.controlleur = controlleur;
         initialiserGUI();
     }
-    public void setEtatAvant(String s){
-        etatAvant=s;
+
+    public void  setZoneAvant(String s){
+        zoneAvant =s;
     }
+    public  String getZoneAvant(){
+        return zoneAvant;
+    }
+    // méthode qui sauvegarde la zone actuel ou se trouve le joueur
+    public void setZoneActuel(String s){
+        zoneActuel =s;
+    }
+
 
     private void initialiserGUI() {
         fenetre = new JFrame("Royaume de Kattekat");
         fenetre.setLayout(new BorderLayout());
 
-        imageLabel = new JLabel(new ImageIcon("Images/Accueil/Accueil.png")); // Assurez-vous d'avoir l'image appropriée
+        imageLabel = new JLabel(new ImageIcon("Images/Accueil/Accueil.png"));
         texte = new JTextArea("Bienvenue sur notre jeu. Veuillez choisir une option.");
         texte.setEditable(false);
 
@@ -60,18 +76,16 @@ public class Gui implements ActionListener {
         continuerBtn.addActionListener(e -> demanderPseudo());
         retour.addActionListener(e -> retourAccueil());
 
-        // Configuration initiale des composants
         entree.setVisible(false);
         retour.setVisible(false);
         entree.addActionListener(this);
         fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        fenetre.setSize(new Dimension(500, 500));
+        fenetre.setSize(new Dimension(600, 600));
         fenetre.setVisible(true);
     }
 
     private void demanderPseudo() {
         etatActuel = "demanderPseudo";
-        System.out.println("Utilisateur connu" + etatActuel);
         chargerImage("Images/Accueil/Objectif.png");
         texte.setText("Veuillez entrer votre pseudo :");
         entree.setVisible(true);
@@ -121,25 +135,13 @@ public class Gui implements ActionListener {
                 throw new RuntimeException(ex);
             }
         }
-        if("foretDesCranes".equals(etatActuel) && entree.getText().trim()=="suite" ){
-            System.out.println("here ");
-            controlleur.next();
-        }
         if(etatActuel.equals("foretDesCranes")){
             controlleur.traiterEntreeCranes(entree.getText().trim());
         }
-        if(etatActuel.equals("grotteDesAnciens") && entree.getText().trim().equals("suite") ){
-            System.out.println(" actionListener ");
-            controlleur.nextt();
-        }
+
         if(etatActuel.equals("grotteDesAnciens")){
-            System.out.println(" on passe etta");
             controlleur.traiterEntreeGrotte(entree.getText().trim());
         }
-
-
-
-
 
     }
 
@@ -176,19 +178,17 @@ public class Gui implements ActionListener {
                     entree.setVisible(true);
                     break;
                 case "grotteDesAnciens" :
-                    System.out.println("case grotte");
                     entree.setVisible(true);
                     break;
 
 
-                // Autres cas pour différents états de jeu
             }
         });
     }
 
     private void demandeReessayerOuRetour() {
         texte.setText("Pseudo inconnu. Veuillez réessayer ou appuyer sur 'Retour'.");
-        entree.setText("");
+        entree.setText(" ");
     }
 
     public void afficherMessage(String message) {
@@ -207,26 +207,33 @@ public class Gui implements ActionListener {
         return pseudo;
 
     }
-    public String getEtatAvant(){
-        return etatAvant;
+    public String getZoneActuel(){
+        return zoneActuel;
     }
+
     public void  setPseudo(String p){
         pseudo=p;
     }
     public void addElement(String e){
         inventaire.add(e);
     }
+
+    //inventaire() retourne la liste de toute les inventaires que le joueur a gagné au cours du jeux
     public String inventaire(){
         if(EtatJeu.pseudoSauvegarde(pseudo)==true){
             inventaire.addAll(BaseDonnee.listInventaire(pseudo));
             return inventaire.toString();
         } else if (inventaire.size()==0) {
-            return "Vous avez zero elements";
+            return "Vous avez aucun elements";
         }
         return inventaire.toString();
 
     }
-    public Set<String> list(){
+
+    // List() retourne la liste des éléments que le joueur à ajouter lors de sa partie
+    public Set<String> list() {
         return inventaire;
     }
+
+
 }

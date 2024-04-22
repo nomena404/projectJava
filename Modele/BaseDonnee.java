@@ -44,10 +44,7 @@ public class BaseDonnee {
 
 
     public static void ecritureEtatJson(String n, Set<String> inv, String etat, String zone)  {
-       // System.out.println("Test entrée");
         JSONArray jsonArray = lectureJsonEtat();
-       // System.out.println("On rentre ici ecriture");
-        //System.out.println(jsonArray);
         JSONObject nouvelEtat = new JSONObject();
         nouvelEtat.put("pseudo", n);
         nouvelEtat.put("Inventaire", Utile.ListEnString(inv));

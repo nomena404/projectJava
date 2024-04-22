@@ -6,6 +6,8 @@ import Vue.Gui;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static Controlleur.Controlleur.quitterEtSauvegarder;
+
 public class GrotteDesAnciens implements  IZone {
        private Gui gui;
         private ArrayList<String> elements = new ArrayList<>(Arrays.asList("pierre","eau"));
@@ -16,9 +18,9 @@ public class GrotteDesAnciens implements  IZone {
         @Override
         public void entrer() {
             System.out.println(gui.getEtatActuel()+ "entree");
-            System.out.println(gui.getEtatAvant()+ "entree etat ");
+            System.out.println(gui.getEtatActuel()+ "entree etat ");
             gui.chargerImage("Images/grotte/zonePrincipal.png");
-            gui.setEtatAvant("zonePrincipal");
+            gui.setZoneActuel("zonePrincipal");
             gui.setEtat("grotteDesAnciens", "Vous êtes dans la grotte Des Anciens. Choisissez une direction (NORD, SUD, EST).");
 
 
@@ -29,7 +31,6 @@ public class GrotteDesAnciens implements  IZone {
             System.out.println(commande);
             System.out.println("zone grotte traiter ");
             if ("nord".equals(commande.toLowerCase().trim())) {
-                System.out.println("on est dans la boucle iff");
                 allerNord();
             } else if ("sud".equals(commande.toLowerCase().trim())) {
                 allerSud();
@@ -42,13 +43,23 @@ public class GrotteDesAnciens implements  IZone {
             else if ("retour".equals(commande.toLowerCase().trim())) {
                 retour();
             }
-            else if ("boire".equals(commande.toLowerCase().trim()) && gui.getEtatAvant().equals("zoneSud")) {
-                afficheMeduse();
+            else if ("inventaire".equals(commande.toLowerCase().trim())) {
+                afficherInventaire();
             }
-            else if ("sortir".equals(commande.toLowerCase().trim()) && gui.getEtatAvant().equals("zoneEst")) {
-                suivant();
-            }
+            else if ("boire".equals(commande.toLowerCase().trim()) ) {
+                System.out.println(commande);
+                System.out.println(gui.getZoneActuel().equals("zoneSud"));
+                if((gui.getZoneActuel()).equals("zoneSud")){
+                    afficheMeduse();
+                }
 
+            }
+            else if ("meduse".equals(commande.toLowerCase().trim()) ) {
+                if(gui.getZoneActuel().equals("zoneSudMeduse")){
+                    suivant();
+                }
+
+            }
             else if (elements.contains(commande.toLowerCase())) {
                 ajouteObj(commande.toLowerCase());
             }
@@ -57,11 +68,17 @@ public class GrotteDesAnciens implements  IZone {
             }
         }
 
+    private void afficherInventaire() {
+        gui.setEtat("foretDesCranes","Voici les elements que vous possédez :\n"+ gui.inventaire());
+
+    }
+
     private void suivant() {
         gui.chargerImage("suite.png");
-        gui.setEtatAvant("grotteDesAnciensEst");
-        gui.setEtat("grotteDesAnciens","biennvenu dans la suite erik");
-
+        gui.setZoneActuel("grotteDesAnciensEst");
+        gui.setEtat("grotteDesAnciens","biennvenu dans la suite , vous venez de passer à l'étape suivante");
+        gui.addElement("Rollo");
+        gui.addElement("Ivar");
     }
 
 
@@ -69,29 +86,21 @@ public class GrotteDesAnciens implements  IZone {
         private void afficheMeduse() {
 
             gui.chargerImage("Images/grotte/zoneSudMeduse.png");
-            gui.setEtatAvant("zoneSudMeduse");
-            gui.setEtat("grotteDesAnciens"," Vous etes au Sud et la meduse  vient de vous conféré une pouvoir mystique " );
+            gui.setZoneActuel("zoneSudMeduse");
+            gui.setEtat("grotteDesAnciens"," Vous etes au Sud\n Je suis le roi des mers, un être redoutable avec mes tentacules et mon regard pétrifiant\n. Dans les profondeurs de l'océan, je règne en maître. Cependant, \nmême les rois ont des liens de sang. Mon frère est un célèbre guerrier, redoutable \ndans son propre droit. Mon fils, surnommé le Desosseur, est craint dans tout le royaume. \nQui suis-je ?" );
 
 
         }
 
         private void retour() {
-            if(gui.getEtatAvant().equals("zoneEst")){
-                allerEst();
-            } else if (gui.getEtatAvant().equals("zoneSud")) {
-                allerSud();
-            }else if(gui.getEtatAvant().equals("zoneEst")){
-                allerEst();
-            }
-            entrer();
-
+            gui.chargerImage("Images/crane/zoneEst.png");
+            gui.setZoneActuel("zoneEst");
+            gui.setEtat("foretDesCranes", "Bonjour vous etes de retour dans la zone Forêt de cranes");
         }
 
         private void allerNord() {
-            System.out.println("nord zone");
-            System.out.println(gui.getEtatAvant() + " etat zone nord");
             gui.chargerImage("Images/grotte/zoneNord.png");
-            gui.setEtatAvant("zoneNord");
+            gui.setZoneActuel("zoneNord");
             gui.setEtat("grotteDesAnciens"," Vous etes au Nord");
 
         }
@@ -99,14 +108,14 @@ public class GrotteDesAnciens implements  IZone {
         private void allerSud() {
             System.out.println("sud");
             gui.chargerImage("Images/grotte/zoneSud.png");
-            gui.setEtatAvant("zoneSud");
-            gui.setEtat("grotteDesAnciens"," Vous etes au Sud");
+            gui.setZoneActuel("zoneSud");
+            gui.setEtat("grotteDesAnciens"," Vous etes au Sud\n sachez que vous pouvez 'hydrater\n entrer la bonne commande");
         }
 
         private void allerEst() {
             System.out.println("est");
             gui.chargerImage("Images/grotte/zoneEst.png");
-            gui.setEtatAvant("zoneEst");
+            gui.setZoneActuel("zoneEst");
             gui.setEtat("grotteDesAnciens"," Vous etes au Est");
         }
 
@@ -115,11 +124,7 @@ public class GrotteDesAnciens implements  IZone {
             gui.setEtat("grotteDesAnciens", "Vous avez ajouter "+ elt);
         }
 
-        private void quitterEtSauvegarder() {
-            EtatJeu etatJeu= new EtatJeu(gui.getPseudo(),gui.list(),gui.getEtatAvant(), gui.getEtatActuel());
-            gui.chargerImage("bye.png");
-            gui.setEtat("grotteDesAnciens"," Aurevoir");
-        }
+
 
 
     }

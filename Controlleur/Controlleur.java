@@ -4,6 +4,7 @@ import Modele.BaseDonnee;
 import Modele.EtatJeu;
 import Modele.Exceptions.LePseudoExisteDéjà;
 import Modele.NvlPseudo;
+import Modele.Utile;
 import Vue.Gui;
 import Zone.GrotteDesAnciens;
 import Zone.ZoneForetDesAnciens;
@@ -31,7 +32,7 @@ public class Controlleur {
     public void nouvellePseudo(String pseudo) {
         try {
             if (!pseudo.isEmpty() && !NvlPseudo.pseudoExistant(pseudo)) {
-                NvlPseudo pseudo1=  new NvlPseudo(pseudo);
+                new NvlPseudo(pseudo);
                 vue.setPseudo(pseudo);
                 vue.setEtat("demarrerNvJeu", "Pseudo accepté. Bienvenue " + pseudo + "!");
             } else {
@@ -46,13 +47,11 @@ public class Controlleur {
 
 
     public void verifierPseudoJoueur(String pseudo){
-        System.out.println("Vérification du pseudo: " + pseudo);
         if(NvlPseudo.pseudoExistant(pseudo)){
             vue.setPseudo(pseudo);
             System.out.println("Le pseudo existe.");
             vue.setEtat("UtilisateurConnu", "Bienvenue " + pseudo);
         } else {
-            System.out.println("Le pseudo n'existe pas."); // Pour le débogage
             vue.setEtat("PseudoJoueurInconnu", "Pseudo inconnu. Réessayer ou faire Retour.");
         }
     }
@@ -73,54 +72,62 @@ public class Controlleur {
 
     // lastZone permet de charger le contenu du du joueur qui se connecte
     public void lastZone() throws IOException, ParseException {
-        EtatJeu etat=  EtatJeu.recupererEtatJeu(vue.getPseudo());
+        EtatJeu etat = EtatJeu.recupererEtatJeu(vue.getPseudo());
         System.out.println(etat);
         System.out.println(EtatJeu.recupererEtatJeu(vue.getPseudo()));
-        switch (etat.getZone()){
-            case"foretDesAnciens":
-                vue.setEtat("foretDesAnciens","Bienvenue +"+ vue.getPseudo());
-                vue.chargerImage("Images/foret/"+etat.getEtat()+".png");
+        switch (etat.getEtat()) {
+            case "foretDesAnciens":
+                vue.setEtat("foretDesAnciens", "Bienvenue +" + vue.getPseudo());
+                vue.chargerImage("Images/foret/" + etat.getZone() + ".png");
                 break;
 
-            case"foretDesCranes":
-                vue.setEtat("foretDesCranes","Bienvenue +"+ vue.getPseudo());
-                vue.chargerImage("Images/crane/"+etat.getEtat()+".png");
+            case "foretDesCranes":
+                vue.setEtat("foretDesCranes", "Bienvenue +" + vue.getPseudo());
+                vue.chargerImage("Images/crane/" + etat.getZone() + ".png");
                 break;
-            case"grotteDesAnciens":
-                vue.setEtat("grotteDesAnciens","Bienvenue +"+ vue.getPseudo());
-                vue.chargerImage("Images/grotte/"+etat.getEtat()+".png");
+            case "grotteDesAnciens":
+                vue.setEtat("grotteDesAnciens", "Bienvenue +" + vue.getPseudo());
+                vue.chargerImage("Images/grotte/" + etat.getZone() + ".png");
                 break;
         }
-
 
     }
 
 
     public void traiterEntreeCranes(String trim) {
 
-        if("foretDesCranes".equals(vue.getEtatActuel())){
             foretDesCranes.traiterCommande(trim);
-
-        }
     }
     public void traiterEntreeGrotte(String trim) {
-        System.out.println("hola crane");
-        if("grotteDesAnciens".equals(vue.getEtatActuel())){
 
             grotteDesAnciens.traiterCommande(trim);
 
         }
-    }
+
 
 
     public static void quitterEtSauvegarder() {
-        if ((vue.list()).isEmpty()) {
+        // si la liste est vide et le joueur n'est pas encore sauvegardé dans la base des etat
+        if ((vue.list()).isEmpty() && !(EtatJeu.pseudoSauvegarde(vue.getPseudo()))) {
             vue.list().add("vide");
-        } else if (EtatJeu.pseudoSauvegarde(vue.getPseudo())) {
+            BaseDonnee.ecritureEtatJson(vue.getPseudo(), vue.list(), vue.getEtatActuel(), vue.getZoneActuel());
+            vue.chargerImage("bye.png");
+            vue.setEtat(vue.getEtatActuel(), " Aurevoir");
+       // si la liste est vide et le joueur est sauvegardé dans la base des etat
+
+        }  else if((vue.list()).isEmpty() && !(EtatJeu.pseudoSauvegarde(vue.getPseudo()))) {
             BaseDonnee.suppressionEtat(vue.getPseudo());
-            BaseDonnee.ecritureEtatJson(vue.getPseudo(), vue.list(), vue.getEtatAvant(), vue.getEtatActuel());
+            BaseDonnee.ecritureEtatJson(vue.getPseudo(), Utile.StringEnList(vue.inventaire()), vue.getEtatActuel(), vue.getZoneActuel());
+            vue.chargerImage("bye.png");
+            vue.setEtat(vue.getEtatActuel(), " Aurevoir");
+        }
+        else if (!((vue.list()).isEmpty()) && EtatJeu.pseudoSauvegarde(vue.getPseudo())) {
+            BaseDonnee.suppressionEtat(vue.getPseudo());
+            BaseDonnee.ecritureEtatJson(vue.getPseudo(), vue.list(), vue.getEtatActuel(), vue.getZoneActuel());
+            vue.chargerImage("bye.png");
+            vue.setEtat(vue.getEtatActuel(), " Aurevoir");
         } else {
-            BaseDonnee.ecritureEtatJson(vue.getPseudo(), vue.list(), vue.getEtatAvant(), vue.getEtatActuel());
+            BaseDonnee.ecritureEtatJson(vue.getPseudo(), vue.list(), vue.getEtatActuel(), vue.getZoneActuel());
             vue.chargerImage("bye.png");
             vue.setEtat(vue.getEtatActuel(), " Aurevoir");
         }
