@@ -6,9 +6,7 @@ import Modele.Exceptions.LePseudoExisteDéjà;
 import Modele.NvlPseudo;
 import Modele.Utile;
 import Vue.Gui;
-import Zone.GrotteDesAnciens;
-import Zone.ZoneForetDesAnciens;
-import Zone.ZoneForetDesCranes;
+import Zone.*;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -19,13 +17,16 @@ public class Controlleur {
     private ZoneForetDesAnciens foretDesAnciens;
     private ZoneForetDesCranes foretDesCranes;
     private GrotteDesAnciens grotteDesAnciens;
-
+    private ZoneLabyrinthe zoneLabyrinthe;
+    private ZoneLac zoneLac;
     public Controlleur() {
         javax.swing.SwingUtilities.invokeLater(() -> {
             vue = new Gui(this);
             foretDesAnciens = new ZoneForetDesAnciens(vue);
             foretDesCranes= new ZoneForetDesCranes(vue);
             grotteDesAnciens=new GrotteDesAnciens(vue);
+            zoneLac=new ZoneLac(vue);
+            zoneLabyrinthe= new ZoneLabyrinthe(vue);
         });
     }
 
@@ -60,10 +61,24 @@ public class Controlleur {
 
 
     public void traiterEntreeForet(String entree) throws IOException, ParseException {
-        if ("foretDesAnciens".equals(vue.getEtatActuel())) {
             foretDesAnciens.traiterCommande(entree);
-        }
+    }
+    public  void traiterEntreeLac(String entree){
+        zoneLac.traiterCommande(entree);
+    }
+    public void traiterEntreeCranes(String trim) {
 
+        foretDesCranes.traiterCommande(trim);
+    }
+    public void traiterEntreeGrotte(String trim) {
+
+        grotteDesAnciens.traiterCommande(trim);
+
+    }
+
+
+    public  void traiterEntreeLabyrinthe(String entree){
+        zoneLabyrinthe.traiterCommande(entree);
     }
 
     public void firstZone(){
@@ -74,6 +89,7 @@ public class Controlleur {
     public void lastZone() throws IOException, ParseException {
         EtatJeu etat = EtatJeu.recupererEtatJeu(vue.getPseudo());
         System.out.println(etat);
+        System.out.println(etat.getZone() +"holà");
         System.out.println(EtatJeu.recupererEtatJeu(vue.getPseudo()));
         switch (etat.getEtat()) {
             case "foretDesAnciens":
@@ -89,21 +105,19 @@ public class Controlleur {
                 vue.setEtat("grotteDesAnciens", "Bienvenue +" + vue.getPseudo());
                 vue.chargerImage("Images/grotte/" + etat.getZone() + ".png");
                 break;
+
+            case "lacSacre":
+                vue.setEtat("lacSacre", "Bienvenue +" + vue.getPseudo());
+                vue.chargerImage("Images/lac/" + etat.getZone() + ".png");
+                break;
+
+            case "zoneLabyrinthe":
+                vue.setEtat("zoneLabyrinthe", "Bienvenue " + vue.getPseudo());
+                vue.chargerImage("Images/labyrinthe/" + etat.getZone() + ".png");
+                break;
         }
 
     }
-
-
-    public void traiterEntreeCranes(String trim) {
-
-            foretDesCranes.traiterCommande(trim);
-    }
-    public void traiterEntreeGrotte(String trim) {
-
-            grotteDesAnciens.traiterCommande(trim);
-
-        }
-
 
 
     public static void quitterEtSauvegarder() {
@@ -115,26 +129,19 @@ public class Controlleur {
             vue.setEtat(vue.getEtatActuel(), " Aurevoir");
        // si la liste est vide et le joueur est sauvegardé dans la base des etat
 
-        }  else if((vue.list()).isEmpty() && !(EtatJeu.pseudoSauvegarde(vue.getPseudo()))) {
+        }  else if((vue.list()).isEmpty() && (EtatJeu.pseudoSauvegarde(vue.getPseudo()))) {
             BaseDonnee.suppressionEtat(vue.getPseudo());
             BaseDonnee.ecritureEtatJson(vue.getPseudo(), Utile.StringEnList(vue.inventaire()), vue.getEtatActuel(), vue.getZoneActuel());
             vue.chargerImage("bye.png");
             vue.setEtat(vue.getEtatActuel(), " Aurevoir");
         }
-        else if (!((vue.list()).isEmpty()) && EtatJeu.pseudoSauvegarde(vue.getPseudo())) {
+        else  {
             BaseDonnee.suppressionEtat(vue.getPseudo());
-            BaseDonnee.ecritureEtatJson(vue.getPseudo(), vue.list(), vue.getEtatActuel(), vue.getZoneActuel());
-            vue.chargerImage("bye.png");
-            vue.setEtat(vue.getEtatActuel(), " Aurevoir");
-        } else {
             BaseDonnee.ecritureEtatJson(vue.getPseudo(), vue.list(), vue.getEtatActuel(), vue.getZoneActuel());
             vue.chargerImage("bye.png");
             vue.setEtat(vue.getEtatActuel(), " Aurevoir");
         }
     }
 
-    public void next() {
-        foretDesCranes.entrer();
-    }
-    public  void nextt(){ grotteDesAnciens.entrer();}
+
 }

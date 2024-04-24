@@ -15,8 +15,8 @@ import java.util.Set;
 
 public class Gui implements ActionListener {
     private JFrame fenetre;
-    private JTextField entree;
-    private JTextArea texte;
+    public JTextField entree;
+    public JTextArea texte;
     private JLabel imageLabel;
     private Controlleur controlleur;
     private JButton demarrerBtn, continuerBtn, retour;
@@ -142,6 +142,12 @@ public class Gui implements ActionListener {
         if(etatActuel.equals("grotteDesAnciens")){
             controlleur.traiterEntreeGrotte(entree.getText().trim());
         }
+        if(etatActuel.equals("lacSacre")){
+            controlleur.traiterEntreeLac(entree.getText().trim());
+        }
+        if(etatActuel.equals("zoneLabyrinthe")){
+            controlleur.traiterEntreeLabyrinthe(entree.getText().trim());
+        }
 
     }
 
@@ -180,6 +186,15 @@ public class Gui implements ActionListener {
                 case "grotteDesAnciens" :
                     entree.setVisible(true);
                     break;
+
+                case "lacSacre" :
+                    entree.setVisible(true);
+                    break;
+
+                case "zoneLabyrinthe" :
+                    entree.setVisible(true);
+                    break;
+
 
 
             }

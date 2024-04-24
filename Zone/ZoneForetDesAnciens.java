@@ -45,7 +45,6 @@ public class ZoneForetDesAnciens implements IZone {
             if(gui.getZoneActuel()=="ZoneEstErmite"){
                 sortirZone();
             }
-            gui.afficherMessage("Commande inconnue. Essayez à nouveau.");
 
         } else if("tambourbaton".equals(commande) ){
             /*System.out.println(Utile.StringEnList(gui.inventaire()) + "avant boucke" +

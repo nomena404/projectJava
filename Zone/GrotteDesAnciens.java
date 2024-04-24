@@ -1,6 +1,5 @@
 package Zone;
 
-import Modele.EtatJeu;
 import Vue.Gui;
 
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ public class GrotteDesAnciens implements  IZone {
             }
             else if ("meduse".equals(commande.toLowerCase().trim()) ) {
                 if(gui.getZoneActuel().equals("zoneSudMeduse")){
-                    suivant();
+                    sortirZone();
                 }
 
             }
@@ -73,10 +72,10 @@ public class GrotteDesAnciens implements  IZone {
 
     }
 
-    private void suivant() {
-        gui.chargerImage("suite.png");
-        gui.setZoneActuel("grotteDesAnciensEst");
-        gui.setEtat("grotteDesAnciens","biennvenu dans la suite , vous venez de passer à l'étape suivante");
+    private void sortirZone() {
+        gui.chargerImage("Images/lac/zonePrincipal.png");
+        gui.setZoneActuel("zonePrincipal");
+        gui.setEtat("lacSacre","biennvenu dans la suite , vous venez de passer à l'étape suivante");
         gui.addElement("Rollo");
         gui.addElement("Ivar");
     }
