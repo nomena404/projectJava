@@ -1,9 +1,6 @@
 package Zone;
 
-import Modele.Utile;
 import Vue.Gui;
-
-import java.util.Arrays;
 
 import static Controlleur.Controlleur.quitterEtSauvegarder;
 
@@ -42,46 +39,59 @@ public class ZoneLac implements IZone {
     public void traiterCommande(String commande) {
 
         if ("nord".equals(commande.toLowerCase().trim())) {
-
+            if(gui.getZoneActuel().equals("zoneBateau")){
                 prendreBateau();
+            }
 
 
-        } else if ("sud".equals(commande.toLowerCase().trim())) {
 
+        } else if ("est".equals(commande.toLowerCase().trim())) {
+            if(gui.getZoneActuel().equals("zonePrincipal")){
                 zoneCrabe();
+            }
 
-
-                //zoneCrabe1();
-
-
+            if(gui.getZoneActuel().equals("zoneSud")){
+                zoneCrabe1();
+            }
 
         }else if ("force".equals(commande.toLowerCase().trim())) {
-             avecForce();
+            if(gui.getZoneActuel().equals("zoneNordBateau")){
+                avecForce();
+            }
+
+
+
 
         } else if ("vent".equals(commande.toLowerCase().trim())) {
-
+            if(gui.getZoneActuel().equals("zoneSud")){
                 enleveBrouillard();
+            }
+
+
 
         }
         else if ("quitter".equals(commande.toLowerCase().trim())) {
             quitterEtSauvegarder();
         }
         else if ("phare".equals(commande.toLowerCase().trim())) {
+            if(gui.getZoneActuel().equals("zoneEst")){
                 afficheBateau();
+            }
+
 
         }
 
         else if ("lire".equals(commande.toLowerCase().trim())) {
 
-                afficheEcriture();
-                //on affiche ce qui est ecrit
+            if(gui.getZoneActuel().equals("zoneEcriture")) {
+                afficheEcriture(); // a refaire
+            }
             }
 
         else if ("rune".equals(commande.toLowerCase().trim())) {
-
+            if(gui.getZoneActuel().equals("zoneOasis")){
                 afficheEcriture();
-
-                //on affiche ce qui est ecrit
+            }
             }
 
         else if ("inventaire".equals(commande.toLowerCase().trim())) {
@@ -107,13 +117,14 @@ public class ZoneLac implements IZone {
     private void zoneCrabe() {
         gui.chargerImage("Images/lac/zoneSud.png");
         gui.setZoneActuel("zoneSud");
-        gui.setEtat("lacSacre"," Vous etes au Sud\n "+enigmeI);
+        gui.setEtat("lacSacre"," Vous etes a l'Est\n " +
+                "Répondez correctement à l'énigme \n"+enigmeI);
 
     }
     private void zoneCrabe1() {
-        gui.chargerImage("Images/lac/zoneSud2.png");
-        gui.setZoneActuel("zoneSud2");
-        gui.setEtat("lacSacre"," Vous etes au Sud\n "+"Résolvez l'enigme pour acquérir un nouvel element crucial"+enigmeII);
+        gui.chargerImage("Images/lac/zoneEst.png");
+        gui.setZoneActuel("zoneEst");
+        gui.setEtat("lacSacre"," Vous etes au Sud\n "+"Résolvez l'enigme pour acquérir un nouvel element crucial\n"+enigmeII);
 
     }
 
@@ -154,15 +165,16 @@ public class ZoneLac implements IZone {
 
         gui.chargerImage("Images/lac/zoneOasis.png");
         gui.setZoneActuel("zoneOasis");
-        gui.setEtat("lacSacre"," Vous etes au Sud\n sachez que vous pouvez 'hydrater\n entrer la bonne commande");
+        gui.setEtat("lacSacre"," Vous etes au Nord\n sachez que vous pouvez lire ce qui est ecrit\n, "+ enigme3+" entrer la bonne commande");
     }
 
     private void enleveBrouillard() {
 
         gui.chargerImage("Images/lac/zoneSansBrouillard.png");
-        gui.setZoneActuel("zoneEst");
+        gui.setZoneActuel("zoneSansBrouillard");
         gui.setEtat("lacSacre"," Le vent s'est levé et les brouillards ainsi partis\n " +
-                "Votre quetes n'est pas encore terminé");
+                "Votre quetes n'est pas encore terminé \n" +
+                "Reevenez vers le crabe");
     }
 
 
