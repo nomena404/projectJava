@@ -43,13 +43,16 @@ public class BaseDonnee {
     }
 
 
-    public static void ecritureEtatJson(String n, Set<String> inv, String etat, String zone)  {
+    public static void ecritureEtatJson(String n, Set<String> inv, String etat, String zone ,String texte)  {
         JSONArray jsonArray = lectureJsonEtat();
         JSONObject nouvelEtat = new JSONObject();
+
+
         nouvelEtat.put("pseudo", n);
         nouvelEtat.put("Inventaire", Utile.ListEnString(inv));
         nouvelEtat.put("Etat", etat);
         nouvelEtat.put("Zone", zone);
+        nouvelEtat.put("Texte",texte);
         jsonArray.add(nouvelEtat);
 
         try (FileWriter file = new FileWriter(ETAT_JEU)) {
@@ -97,14 +100,30 @@ public class BaseDonnee {
     public static Set<String> listInventaire(String pseudo){
         JSONArray jsonArray = lectureJsonEtat();
         Iterator<Object> iterator= jsonArray.iterator();
-        Set<String> liste= new HashSet<>();
+        Iterator<String> it;
+        Set<String> strings= new HashSet<>();
         while (iterator.hasNext()){
             JSONObject ob= (JSONObject) iterator.next();
             if(pseudo.equals(ob.get("pseudo"))){
-               liste.addAll(Utile.StringEnList((String) ob.get("Inventaire")));
+               String n=(String) ob.get("Inventaire");
+               strings=Utile.StringEnList(n);
             }
         }
-        return liste;
+        return strings;
 
     }
+
+    public static boolean pseudoSauvegarde(String pseudo)  {
+        JSONArray jsonArray = lectureJsonEtat();
+        for (Object item : jsonArray) {
+            JSONObject etatJeuObj = (JSONObject) item;
+            String pseudoJson = (String) etatJeuObj.get("pseudo");
+            if (pseudoJson.equals(pseudo)) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
 }

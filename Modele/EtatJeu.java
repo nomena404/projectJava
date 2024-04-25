@@ -16,13 +16,15 @@ public class EtatJeu extends BaseDonnee {
     private Set<String> inventaire;
     private String etat;
     private String zone;
+    private  String texte;
 
-    public EtatJeu(String pseudo, Set<String> inventaire, String etat, String zone) {
+    public EtatJeu(String pseudo, Set<String> inventaire, String etat, String zone,String txt) {
 
         this.pseudo = pseudo;
         this.inventaire = inventaire;
         this.etat = etat;
         this.zone = zone;
+        this.texte=txt;
     }
     public static EtatJeu recupererEtatJeu(String pseudo)  {
         JSONArray jsonArray = lectureJsonEtat();
@@ -34,8 +36,9 @@ public class EtatJeu extends BaseDonnee {
                 String inventaire = (String ) etatJeuObj.get("Inventaire");
                 String eta = (String) etatJeuObj.get("Etat");
                 String zon = (String) etatJeuObj.get("Zone");
-                System.out.println(eta+"\n"+ zon + "nothing here");
-             return new EtatJeu(pseudoJson, Utile.StringEnList(inventaire), eta, zon);
+                String tx= (String) etatJeuObj.get("Texte");
+
+             return new EtatJeu(pseudoJson, Utile.StringEnList(inventaire), eta, zon,tx);
             }
 
         }
@@ -43,45 +46,14 @@ public class EtatJeu extends BaseDonnee {
         return null;
     }
 
-    public static boolean pseudoSauvegarde(String pseudo)  {
-        JSONArray jsonArray = lectureJsonEtat();
-        for (Object item : jsonArray) {
-            JSONObject etatJeuObj = (JSONObject) item;
-            String pseudoJson = (String) etatJeuObj.get("pseudo");
-            if (pseudoJson.equals(pseudo)) {
-                return true;
-            }
-
-        }
-
-        return false;
-    }
-
-
-
-    public String getPseudo() {
-        return pseudo;
-    }
-
-    public void setPseudo(String pseudo) {
-        this.pseudo = pseudo;
-    }
-
-    public Set<String> getInventaire() {
-        return inventaire;
-    }
-
-    public void setInventaire(Set<String> inventaire) {
-        this.inventaire = inventaire;
-    }
 
     public String getEtat() {
         return etat;
     }
 
-    public void setEtat(String etat) {
-        this.etat = etat;
-    }
+public String getTexte(){
+        return texte;
+}
 
     public String getZone() {
         return zone;

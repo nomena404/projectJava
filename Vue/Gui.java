@@ -3,6 +3,7 @@ package Vue;
 import Controlleur.Controlleur;
 import Modele.BaseDonnee;
 import Modele.EtatJeu;
+import Modele.Utile;
 import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
@@ -14,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Gui implements ActionListener {
-    private JFrame fenetre;
+    public JFrame fenetre;
     public JTextField entree;
     public JTextArea texte;
     private JLabel imageLabel;
@@ -22,27 +23,21 @@ public class Gui implements ActionListener {
     private JButton demarrerBtn, continuerBtn, retour;
     private String etatActuel = "accueil";
     private String zoneActuel ="";
-    private String zoneAvant ="";
 
-
-
+    public   String txt="";
 
 
     private String pseudo="";
 
-    private Set<String> inventaire=new HashSet<String>();
+    public Set<String> inventaire=new HashSet<String>();
+
 
     public Gui(Controlleur controlleur) {
         this.controlleur = controlleur;
         initialiserGUI();
     }
 
-    public void  setZoneAvant(String s){
-        zoneAvant =s;
-    }
-    public  String getZoneAvant(){
-        return zoneAvant;
-    }
+
     // méthode qui sauvegarde la zone actuel ou se trouve le joueur
     public void setZoneActuel(String s){
         zoneActuel =s;
@@ -56,15 +51,22 @@ public class Gui implements ActionListener {
         imageLabel = new JLabel(new ImageIcon("Images/Accueil/Accueil.png"));
         texte = new JTextArea("Bienvenue sur notre jeu. Veuillez choisir une option.");
         texte.setEditable(false);
+        texte.setPreferredSize(new Dimension(200, 100));
+
+        JScrollPane scrollPane = new JScrollPane(texte);
+
 
         entree = new JTextField();
         demarrerBtn = new JButton("S'inscrire");
         continuerBtn = new JButton("Continuer");
         retour = new JButton("Retour");
 
+
+
         JPanel centrePanel = new JPanel(new BorderLayout());
         centrePanel.add(imageLabel, BorderLayout.CENTER);
-        centrePanel.add(texte, BorderLayout.SOUTH);
+        centrePanel.add(scrollPane, BorderLayout.SOUTH);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         fenetre.add(centrePanel, BorderLayout.CENTER);
         fenetre.add(entree, BorderLayout.SOUTH);
@@ -80,7 +82,7 @@ public class Gui implements ActionListener {
         retour.setVisible(false);
         entree.addActionListener(this);
         fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        fenetre.setSize(new Dimension(600, 600));
+        fenetre.setSize(new Dimension(640, 680));
         fenetre.setVisible(true);
     }
 
@@ -127,6 +129,7 @@ public class Gui implements ActionListener {
             controlleur.nouvellePseudo(entree.getText().trim());
         }
         if(etatActuel.equals("foretDesAnciens")){
+
             try {
                 controlleur.traiterEntreeForet(entree.getText().trim());
             } catch (IOException ex) {
@@ -134,6 +137,7 @@ public class Gui implements ActionListener {
             } catch (ParseException ex) {
                 throw new RuntimeException(ex);
             }
+
         }
         if(etatActuel.equals("foretDesCranes")){
             controlleur.traiterEntreeCranes(entree.getText().trim());
@@ -154,6 +158,7 @@ public class Gui implements ActionListener {
     public void setEtat(String nouvelEtat, String message) {
         SwingUtilities.invokeLater(() -> {
             etatActuel = nouvelEtat;
+            txt=message;
             texte.setText(message);
             switch (etatActuel) {
                 case "PseudoJoueurInconnu":
@@ -233,20 +238,9 @@ public class Gui implements ActionListener {
         inventaire.add(e);
     }
 
-    //inventaire() retourne la liste de toute les inventaires que le joueur a gagné au cours du jeux
-    public String inventaire(){
-        if(EtatJeu.pseudoSauvegarde(pseudo)==true){
-            inventaire.addAll(BaseDonnee.listInventaire(pseudo));
-            return inventaire.toString();
-        } else if (inventaire.size()==0) {
-            return "Vous avez aucun elements";
-        }
-        return inventaire.toString();
 
-    }
-
-    // List() retourne la liste des éléments que le joueur à ajouter lors de sa partie
     public Set<String> list() {
+        inventaire.addAll(BaseDonnee.listInventaire(getPseudo()));
         return inventaire;
     }
 

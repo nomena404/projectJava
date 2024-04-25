@@ -10,6 +10,10 @@ import Zone.*;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.util.Set;
+
+import static Modele.BaseDonnee.pseudoSauvegarde;
+import static Modele.BaseDonnee.suppressionEtat;
 
 
 public class Controlleur {
@@ -81,38 +85,49 @@ public class Controlleur {
         zoneLabyrinthe.traiterCommande(entree);
     }
 
-    public void firstZone(){
+    public  void firstZone(){
         foretDesAnciens.entrer();
     }
 
     // lastZone permet de charger le contenu du du joueur qui se connecte
     public void lastZone() throws IOException, ParseException {
         EtatJeu etat = EtatJeu.recupererEtatJeu(vue.getPseudo());
-        System.out.println(etat);
-        System.out.println(etat.getZone() +"holà");
-        System.out.println(EtatJeu.recupererEtatJeu(vue.getPseudo()));
+        System.out.println(etat.getZone() +" Last Zone\n");
+        System.out.println(etat.getEtat() +" Last Zone");
+
         switch (etat.getEtat()) {
             case "foretDesAnciens":
-                vue.setEtat("foretDesAnciens", "Bienvenue +" + vue.getPseudo());
+                vue.setEtat("foretDesAnciens", "Heureux de vous revoir " + vue.getPseudo()+"\n" +
+                        etat.getTexte()+"\n" );
+                vue.setZoneActuel(etat.getZone());
                 vue.chargerImage("Images/foret/" + etat.getZone() + ".png");
                 break;
 
             case "foretDesCranes":
-                vue.setEtat("foretDesCranes", "Bienvenue +" + vue.getPseudo());
+                vue.setEtat("foretDesCranes", "Heureux de vous revoir " + vue.getPseudo()+"\n" +
+                        etat.getTexte()+" \n" );
+                vue.setZoneActuel(etat.getZone());
                 vue.chargerImage("Images/crane/" + etat.getZone() + ".png");
                 break;
             case "grotteDesAnciens":
-                vue.setEtat("grotteDesAnciens", "Bienvenue +" + vue.getPseudo());
+                vue.setEtat("grotteDesAnciens", "Heureux de vous revoir " + vue.getPseudo()+"\n" +
+                        etat.getTexte()+"\n");
+                vue.setZoneActuel(etat.getZone());
                 vue.chargerImage("Images/grotte/" + etat.getZone() + ".png");
                 break;
 
             case "lacSacre":
-                vue.setEtat("lacSacre", "Bienvenue +" + vue.getPseudo());
+                vue.setEtat("lacSacre", "Heureux de vous revoir " + vue.getPseudo()+"\n" +
+                        etat.getTexte()+" \n");
+                vue.setZoneActuel(etat.getZone());
                 vue.chargerImage("Images/lac/" + etat.getZone() + ".png");
                 break;
 
             case "zoneLabyrinthe":
-                vue.setEtat("zoneLabyrinthe", "Bienvenue " + vue.getPseudo());
+                vue.setEtat("zoneLabyrinthe", "Heureux de vous revoir " + vue.getPseudo()+"\n" +
+                        etat.getTexte() +"\n" +
+                        "Commande possible : Nord - Sud - Est- Inventaire - Retour - Quitter - Aide -Objectif");
+                vue.setZoneActuel(etat.getZone());
                 vue.chargerImage("Images/labyrinthe/" + etat.getZone() + ".png");
                 break;
         }
@@ -121,27 +136,30 @@ public class Controlleur {
 
 
     public static void quitterEtSauvegarder() {
-        // si la liste est vide et le joueur n'est pas encore sauvegardé dans la base des etat
-        if ((vue.list()).isEmpty() && !(EtatJeu.pseudoSauvegarde(vue.getPseudo()))) {
-            vue.list().add("vide");
-            BaseDonnee.ecritureEtatJson(vue.getPseudo(), vue.list(), vue.getEtatActuel(), vue.getZoneActuel());
-            vue.chargerImage("bye.png");
-            vue.setEtat(vue.getEtatActuel(), " Aurevoir");
-       // si la liste est vide et le joueur est sauvegardé dans la base des etat
-
-        }  else if((vue.list()).isEmpty() && (EtatJeu.pseudoSauvegarde(vue.getPseudo()))) {
-            BaseDonnee.suppressionEtat(vue.getPseudo());
-            BaseDonnee.ecritureEtatJson(vue.getPseudo(), Utile.StringEnList(vue.inventaire()), vue.getEtatActuel(), vue.getZoneActuel());
-            vue.chargerImage("bye.png");
-            vue.setEtat(vue.getEtatActuel(), " Aurevoir");
+        if(!pseudoSauvegarde(vue.getPseudo())){
+            BaseDonnee.ecritureEtatJson(vue.getPseudo(), vue.list(), vue.getEtatActuel(), vue.getZoneActuel(), vue.txt);
         }
-        else  {
-            BaseDonnee.suppressionEtat(vue.getPseudo());
-            BaseDonnee.ecritureEtatJson(vue.getPseudo(), vue.list(), vue.getEtatActuel(), vue.getZoneActuel());
-            vue.chargerImage("bye.png");
-            vue.setEtat(vue.getEtatActuel(), " Aurevoir");
-        }
+       // Set<String> inv=vue.list();
+        BaseDonnee.suppressionEtat(vue.getPseudo());
+        BaseDonnee.ecritureEtatJson(vue.getPseudo(), vue.list(), vue.getEtatActuel(), vue.getZoneActuel(),vue.txt);
+        vue.chargerImage("bye.png");
+        vue.setEtat(vue.getEtatActuel(), " Aurevoir");
     }
 
+    public static void aide() {
+        vue.afficherMessage("Inventaire : Affiche la liste des inventaire que vous possédez\n" +
+                "Quitter: Sauvegarde votre partie\n" +
+                "Objectif : montre les objectifs à atteindre dans les zones" +
+                "Boire: commande accessible que dans une zone en particulière" +
+                "Retour : permet au joueur de revenir à l'état initial (ZonePrincipal) d'entrer (par exemple grotte des anciens)\n" +
+                "Prendre : permet de prendre un élément\n"+"" +
+                "Suivant : commande possible que à une certaine niveau du jeu\n" +
+                "----- Il est important de savoir que lorsque vous entrez dans une zone \n, vous ne pouvez plus " +
+                "en sortir tant que l'énigme n'est pas résolu-----\n" +
+                "Recommencer : vous recommencez le jeu dès le début , et perdra tous vos inventaires" +
+
+                "---Fin Aide --- \n" +
+                "Commande possible : Nord - Sud - Est- Inventaire - Retour - Quitter - Aide -Objectif ");
+    }
 
 }
