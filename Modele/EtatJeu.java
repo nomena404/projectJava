@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import static Modele.BaseDonnee.lectureJsonEtat;
+
 public class EtatJeu extends BaseDonnee {
     private String pseudo;
     private Set<String> inventaire;

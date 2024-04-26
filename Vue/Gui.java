@@ -18,9 +18,11 @@ public class Gui implements ActionListener {
     public JFrame fenetre;
     public JTextField entree;
     public JTextArea texte;
-    private JLabel imageLabel;
+    public JLabel imageLabel;
     private Controlleur controlleur;
-    private JButton demarrerBtn, continuerBtn, retour;
+    public JButton demarrerBtn;
+    public JButton continuerBtn;
+    public JButton retour;
     private String etatActuel = "accueil";
     private String zoneActuel ="";
 
